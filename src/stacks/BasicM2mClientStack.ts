@@ -1,10 +1,10 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
 import { Auth0Provider, Client, ClientGrant, ResourceServer } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
-class BasicM2mClientStack extends BaseAuth0TerraformStack {
+class Stack extends BaseAuth0TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
@@ -44,6 +44,6 @@ class BasicM2mClientStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateBasicM2mClientStack = (app: App) => {
-  new BasicM2mClientStack(app, "basic-m2m-client");
+export default (app: App) => {
+  new Stack(app, "basic-m2m");
 }

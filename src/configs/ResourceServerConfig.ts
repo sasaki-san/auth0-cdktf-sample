@@ -1,5 +1,5 @@
 import { ResourceServerConfig } from "../../.gen/providers/auth0";
-import { AlgTypes } from "./types/Enums";
+import { AlgTypes } from "./Types";
 
 export const ResourceServerBaseConfig = {
   name: "CDKTF-API",

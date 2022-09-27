@@ -1,8 +1,8 @@
 import { Construct } from "constructs";
 import { App, Fn } from "cdktf";
 import { Auth0Provider, Client, Connection, User } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
 interface IdpInfo {
   client: Client
@@ -87,7 +87,7 @@ class BasicSamlSpStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateBasicSamlStack = (app: App) => {
+export default (app: App) => {
   const spConnName = "basic-saml-sp-connection"
   // Create IDP app
   const samlIdp = new BasicSamlIdpStack(app, "basic-saml-idp", spConnName)

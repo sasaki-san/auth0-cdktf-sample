@@ -1,10 +1,10 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
 import { Auth0Provider, Rule, RuleConfigA, RuleConfigAConfig } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
-class RulesStack extends BaseAuth0TerraformStack {
+class Stack extends BaseAuth0TerraformStack {
 
   readonly auth0Provider: Auth0Provider
 
@@ -45,6 +45,6 @@ class RulesStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateRulesStack = (app: App) => {
-  new RulesStack(app, "rules");
+export default (app: App) => {
+  new Stack(app, "rules");
 }

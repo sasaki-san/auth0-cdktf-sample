@@ -25,7 +25,9 @@ class Stack extends BaseAuth0TerraformStack {
     // Create an Auth0 Application - Native
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.nativeDefault,
-      name: this.id(name, "client")
+      name: this.id(name, "client"),
+      logoUri: `https://openmoji.org/data/color/svg/E047.svg`,
+      callbacks: config.env.MOBILE_IOS_CALLBACK,
     })
 
     // Create an Auth0 API 
@@ -61,5 +63,5 @@ class Stack extends BaseAuth0TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "basic-native");
+  new Stack(app, "basic-mobile-android");
 }

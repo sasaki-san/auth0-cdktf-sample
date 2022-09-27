@@ -1,11 +1,11 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
 import { Action, Auth0Provider, TriggerBinding } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
-import { NodeRuntime } from "../configurations/types/Enums";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import { NodeRuntime } from "../configs/Types";
 
-class ActionsStack extends BaseAuth0TerraformStack {
+class Stack extends BaseAuth0TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly actions: Action[]
@@ -67,6 +67,6 @@ class ActionsStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateActionsStack = (app: App) => {
-  new ActionsStack(app, "actions");
+export default (app: App) => {
+  new Stack(app, "actions");
 }

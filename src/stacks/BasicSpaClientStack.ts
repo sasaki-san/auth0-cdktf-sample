@@ -1,10 +1,10 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
 import { Auth0Provider, Client, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
-class BasicSpaClientStack extends BaseAuth0TerraformStack {
+class Stack extends BaseAuth0TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
@@ -51,6 +51,6 @@ class BasicSpaClientStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateBasicSpaClientStack = (app: App) => {
-  new BasicSpaClientStack(app, "basic-spa-client");
+export default (app: App) => {
+  new Stack(app, "basic-spa");
 }

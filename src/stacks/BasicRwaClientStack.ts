@@ -1,10 +1,10 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
 import { Auth0Provider, Client, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
-import { config } from "../configurations"
-import BaseAuth0TerraformStack from "./BaseAuth0TerraformStack";
+import { config } from "../configs"
+import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
-class BasicRwaClientStack extends BaseAuth0TerraformStack {
+class Stack extends BaseAuth0TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
@@ -60,6 +60,6 @@ class BasicRwaClientStack extends BaseAuth0TerraformStack {
   }
 }
 
-export const CreateBasicRwaClientStack = (app: App) => {
-  new BasicRwaClientStack(app, "basic-rwa-client");
+export default (app: App) => {
+  new Stack(app, "basic-rwa");
 }

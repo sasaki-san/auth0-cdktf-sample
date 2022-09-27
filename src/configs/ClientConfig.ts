@@ -1,5 +1,5 @@
 import { ClientConfig } from "../../.gen/providers/auth0"
-import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "./types/Enums"
+import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "./Types"
 
 export const NativeClientBaseConfig = {
   isTokenEndpointIpHeaderTrusted: false,
