@@ -18,7 +18,7 @@ export const NativeClientBaseConfig = {
     rotationType: RotationTypes["non-rotating"],
   },
   jwtConfiguration: {
-    alg: AlgTypes.RS256, 
+    alg: AlgTypes.RS256,
     lifetimeInSeconds: 36000,
     secretEncoded: false
   },
@@ -49,7 +49,7 @@ export const M2mClientBaseConfig = {
     rotationType: RotationTypes["non-rotating"],
   },
   jwtConfiguration: {
-    alg: AlgTypes.RS256, 
+    alg: AlgTypes.RS256,
     lifetimeInSeconds: 36000,
     secretEncoded: false
   },
@@ -78,7 +78,7 @@ export const RwaClientBaseConfig = {
     rotationType: RotationTypes["non-rotating"],
   },
   jwtConfiguration: {
-    alg: AlgTypes.RS256, 
+    alg: AlgTypes.RS256,
     lifetimeInSeconds: 36000,
     secretEncoded: false
   },
@@ -122,6 +122,33 @@ export const SpaClientBaseConfig = {
     GrantTypes.refresh_token
   ],
   customLoginPageOn: true,
+} as ClientConfig
+
+export const SamlIdpBaseConfig = {
+  ...RwaClientBaseConfig,
+  name: "CDKTF SAML IDP Application",
+  callbacks: ["TBD"],
+  addons: {
+    samlp: {
+      createUpnClaim: false,
+      digestAlgorithm: "sha256",
+      includeAttributeNameFormat: false,
+      mapIdentities: false,
+      mapUnknownClaimsAsIs: false,
+      mappings: {},
+      nameIdentifierProbes: [],
+      passthroughClaimsWithNoMapping: false,
+      signResponse: false,
+      signatureAlgorithm: "rsa-sha256",
+      typedAttributes: false
+    }
+  }
+
+} as ClientConfig
+
+export const SamlSpBaseConfig = {
+  ...RwaClientBaseConfig,
+  name: "CDKTF SAML SP Application",
 } as ClientConfig
 
 

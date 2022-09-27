@@ -35,3 +35,21 @@ export enum NodeRuntime {
   "node12" = "node12",
   "node16" = "node16"
 }
+
+export enum Strategies {
+  "auth0" = "auth0",
+  "samlp" = "samlp"
+}
+
+export enum DigestAlg {
+  "sha256" = "sha256"
+}
+
+export enum ProtocolBindings {
+  "POST" = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+
+}
+
+export enum SignatureAlg {
+  "RSASHA256" = "rsa-sha256"
+}

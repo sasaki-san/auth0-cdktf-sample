@@ -12,3 +12,9 @@ export const Auth0ProviderBaseConfig = {
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
 } as IAuth0ProviderBaseConfig 
+
+export const SamlSpAuth0ProviderBaseConfig = {
+  domain: process.env.SAML_SP_DOMAIN,
+  clientId: process.env.SAML_SP_CLIENT_ID,
+  clientSecret: process.env.SAML_SP_CLIENT_SECRET,
+} as IAuth0ProviderBaseConfig 
