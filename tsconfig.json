@@ -28,7 +28,7 @@
   },
   "include": [
     "**/*.ts"
-  ],
+, "src/stacks/index"  ],
   "exclude": [
     "node_modules",
     "cdktf.out"
