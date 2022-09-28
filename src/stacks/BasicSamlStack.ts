@@ -6,7 +6,6 @@ import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 
 interface IdpInfo {
   client: Client
-  provider: Auth0Provider
 }
 
 class BasicSamlIdpStack extends BaseAuth0TerraformStack {
@@ -33,7 +32,7 @@ class BasicSamlIdpStack extends BaseAuth0TerraformStack {
     })
 
     // Create an Auth0 Connection (Username and Password)
-    this.connection = new Connection(this, this.id(name, "connnection"), {
+    this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),
       enabledClients: [this.client.clientId, config.auth0Provider.clientId],
@@ -71,7 +70,7 @@ class BasicSamlSpStack extends BaseAuth0TerraformStack {
     })
 
     // Create an Auth0 Connection (Username and Password)
-    this.connection = new Connection(this, this.id(name, "connnection"), {
+    this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.saml,
       name: spConnName,
       enabledClients: [this.client.clientId, config.samlSpAuth0Provider.clientId],
@@ -92,5 +91,5 @@ export default (app: App) => {
   // Create IDP app
   const samlIdp = new BasicSamlIdpStack(app, "basic-saml-idp", spConnName)
   // Create SP app
-  new BasicSamlSpStack(app, "basic-saml-sp", spConnName, { client: samlIdp.client, provider: samlIdp.auth0Provider });
+  new BasicSamlSpStack(app, "basic-saml-sp", spConnName, { client: samlIdp.client });
 }

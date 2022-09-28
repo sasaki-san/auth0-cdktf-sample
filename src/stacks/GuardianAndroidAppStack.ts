@@ -1,8 +1,9 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
-import { Auth0Provider, Client, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
+import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import { Policies } from "../configs/Types";
 
 class Stack extends BaseAuth0TerraformStack {
 
@@ -59,9 +60,26 @@ class Stack extends BaseAuth0TerraformStack {
       connectionName: this.connection.name,
     })
 
+    // Terraform doesn't work with Amazon SNS part.
+    new Guardian(this, this.id(name, "guardian"), {
+      policy: Policies.Always,
+      push: {
+        customApp: {
+          appName: name
+        },
+        amazonSns: {
+          awsAccessKeyId: config.env.GUARDIAN_AWS_ACCESS_KEY_ID!,
+          awsSecretAccessKey: config.env.GUARDIAN_AWS_ACCESS_SECRET_KEY!,
+          awsRegion: config.env.GUARDIAN_AWS_REGION!,
+          snsGcmPlatformApplicationArn: config.env.GUARDIAN_SNS_GCM_PLATFORM_APP_ARN!,
+          snsApnsPlatformApplicationArn: config.env.GUARDIAN_SNS_APNS_PLATFORM_APP_ARN!,
+        }
+      }
+    })
+
   }
 }
 
 export default (app: App) => {
-  new Stack(app, "basic-mobile-android");
+  new Stack(app, "guardian-android-app");
 }

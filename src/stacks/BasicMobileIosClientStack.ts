@@ -47,7 +47,7 @@ class Stack extends BaseAuth0TerraformStack {
     })
 
     // Create an Auth0 Connection (Username and Password)
-    this.connection = new Connection(this, this.id(name, "connnection"), {
+    this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),
       enabledClients: [this.client.clientId, config.auth0Provider.clientId]

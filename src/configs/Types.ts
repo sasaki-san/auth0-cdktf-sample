@@ -53,3 +53,9 @@ export enum ProtocolBindings {
 export enum SignatureAlg {
   "RSASHA256" = "rsa-sha256"
 }
+
+export enum Policies {
+  "Never" = "never",
+  "AdaptiveMFA" = "confidence-score",
+  "Always" = "all-applications"
+}

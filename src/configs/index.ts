@@ -27,7 +27,12 @@ export interface IAuth0StackBaseConfig {
     MOBILE_IOS_CALLBACK: string[]
     MOBILE_ANDROID_CALLBACK: string[]
     MOBILE_IOS_LOGOUT: string[]
-  }
+    GUARDIAN_AWS_ACCESS_KEY_ID: string | undefined
+    GUARDIAN_AWS_ACCESS_SECRET_KEY: string | undefined
+    GUARDIAN_AWS_REGION: string | undefined
+    GUARDIAN_SNS_GCM_PLATFORM_APP_ARN: string | undefined
+    GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: string | undefined
+  },
 }
 
 export const config: IAuth0StackBaseConfig = {
@@ -51,7 +56,12 @@ export const config: IAuth0StackBaseConfig = {
   env: {
     MOBILE_IOS_CALLBACK: process.env.MOBILE_IOS_CALLBACK?.split(",") || [],
     MOBILE_ANDROID_CALLBACK: process.env.MOBILE_ANDROID_CALLBACK?.split(",") || [],
-    MOBILE_IOS_LOGOUT: process.env.MOBILE_IOS_LOGOUT?.split(",") || []
+    MOBILE_IOS_LOGOUT: process.env.MOBILE_IOS_LOGOUT?.split(",") || [],
+    GUARDIAN_AWS_ACCESS_KEY_ID: process.env.GUARDIAN_AWS_ACCESS_KEY_ID,
+    GUARDIAN_AWS_ACCESS_SECRET_KEY: process.env.GUARDIAN_AWS_ACCESS_SECRET_KEY,
+    GUARDIAN_AWS_REGION: process.env.GUARDIAN_AWS_REGION,
+    GUARDIAN_SNS_GCM_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_GCM_PLATFORM_APP_ARN,
+    GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_APNS_PLATFORM_APP_ARN,
   }
 
 }
