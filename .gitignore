@@ -9,5 +9,7 @@ cdktf.log
 tsconfig.tsbuildinfo
 !jest.config.js
 !setup.js
+
 .env
 .import
+!src/scripts/**/*.js
