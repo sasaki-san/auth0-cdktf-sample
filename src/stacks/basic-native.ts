@@ -17,14 +17,14 @@ class Stack extends BaseAuth0TerraformStack {
     super(scope, name)
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
-      domain: config.auth0Provider.domain,
-      clientId: config.auth0Provider.clientId,
-      clientSecret: config.auth0Provider.clientSecret
+      domain: config.env.DOMAIN,
+      clientId: config.env.CLIENT_ID,
+      clientSecret: config.env.CLIENT_SECRET
     })
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.nativeDefault,
+      ...config.client.native,
       name: this.id(name, "client")
     })
 
@@ -47,7 +47,7 @@ class Stack extends BaseAuth0TerraformStack {
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.auth0Provider.clientId]
+      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
     // Create a User in the created connection

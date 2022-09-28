@@ -14,9 +14,9 @@ class Stack extends BaseAuth0TerraformStack {
     super(scope, name)
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
-      domain: config.auth0Provider.domain,
-      clientId: config.auth0Provider.clientId,
-      clientSecret: config.auth0Provider.clientSecret
+      domain: config.env.DOMAIN,
+      clientId: config.env.CLIENT_ID,
+      clientSecret: config.env.CLIENT_SECRET
     })
 
     const enabledActions = [

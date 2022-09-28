@@ -1,7 +1,7 @@
 import { ClientConfig } from "../../.gen/providers/auth0"
 import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "./Types"
 
-export const NativeClientBaseConfig = {
+const native = {
   isTokenEndpointIpHeaderTrusted: false,
   name: "CDKTF Native Application",
   isFirstParty: true,
@@ -30,9 +30,9 @@ export const NativeClientBaseConfig = {
     GrantTypes.refresh_token
   ],
   customLoginPageOn: true,
-} as ClientConfig
+}
 
-export const M2mClientBaseConfig = {
+const m2m = {
   isTokenEndpointIpHeaderTrusted: false,
   name: "CDKTF M2M Application",
   isFirstParty: true,
@@ -59,9 +59,9 @@ export const M2mClientBaseConfig = {
     GrantTypes.client_credentials
   ],
   customLoginPageOn: true,
-} as ClientConfig
+}
 
-export const RwaClientBaseConfig = {
+const rwa = {
   isTokenEndpointIpHeaderTrusted: false,
   name: "CDKTF RWA Application",
   isFirstParty: true,
@@ -91,9 +91,9 @@ export const RwaClientBaseConfig = {
     GrantTypes.client_credentials
   ],
   customLoginPageOn: true,
-} as ClientConfig
+}
 
-export const SpaClientBaseConfig = {
+const spa = {
   isTokenEndpointIpHeaderTrusted: false,
   name: "CDKTF SPA Application",
   isFirstParty: true,
@@ -122,10 +122,10 @@ export const SpaClientBaseConfig = {
     GrantTypes.refresh_token
   ],
   customLoginPageOn: true,
-} as ClientConfig
+}
 
-export const SamlIdpBaseConfig = {
-  ...RwaClientBaseConfig,
+const samlIdp = {
+  ...rwa,
   name: "CDKTF SAML IDP Application",
   callbacks: ["TBD"],
   addons: {
@@ -143,12 +143,27 @@ export const SamlIdpBaseConfig = {
       typedAttributes: false
     }
   }
+}
 
-} as ClientConfig
-
-export const SamlSpBaseConfig = {
-  ...RwaClientBaseConfig,
+const samlSp: ClientConfig = {
+  ...rwa,
   name: "CDKTF SAML SP Application",
-} as ClientConfig
+}
 
+export interface IClientConfig {
+  native: ClientConfig
+  spa: ClientConfig
+  rwa: ClientConfig
+  m2m: ClientConfig
+  samlIdp: ClientConfig
+  samlSp: ClientConfig
+}
 
+export const clientConfig: IClientConfig = {
+  native,
+  spa,
+  rwa,
+  m2m,
+  samlIdp,
+  samlSp
+}

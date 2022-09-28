@@ -19,23 +19,23 @@ class BasicSamlIdpStack extends BaseAuth0TerraformStack {
     super(scope, name)
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
-      domain: config.auth0Provider.domain,
-      clientId: config.auth0Provider.clientId,
-      clientSecret: config.auth0Provider.clientSecret
+      domain: config.env.DOMAIN,
+      clientId: config.env.CLIENT_ID,
+      clientSecret: config.env.CLIENT_SECRET
     })
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.samlIdpDefault,
+      ...config.client.samlIdp,
       name: this.id(name, "client"),
-      callbacks: [`https://${config.samlSpAuth0Provider.domain}/login/callback?connection=${spConnName}`],
+      callbacks: [`https://${config.env.SAML_SP_DOMAIN}/login/callback?connection=${spConnName}`],
     })
 
     // Create an Auth0 Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.auth0Provider.clientId],
+      enabledClients: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     // Create a User in the created connection
@@ -57,14 +57,14 @@ class BasicSamlSpStack extends BaseAuth0TerraformStack {
     super(scope, name)
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
-      domain: config.samlSpAuth0Provider.domain,
-      clientId: config.samlSpAuth0Provider.clientId,
-      clientSecret: config.samlSpAuth0Provider.clientSecret
+      domain: config.env.SAML_SP_DOMAIN,
+      clientId: config.env.SAML_SP_CLIENT_ID,
+      clientSecret: config.env.SAML_SP_CLIENT_SECRET
     })
 
     // Create an Auth0 Application - RegularWeb App with Saml Addon
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.samlSpDefault,
+      ...config.client.samlSp,
       name: this.id(name, "client-sp"),
       provider: this.auth0Provider
     })
@@ -73,12 +73,12 @@ class BasicSamlSpStack extends BaseAuth0TerraformStack {
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.saml,
       name: spConnName,
-      enabledClients: [this.client.clientId, config.samlSpAuth0Provider.clientId],
+      enabledClients: [this.client.clientId, config.env.SAML_SP_CLIENT_ID],
       provider: this.auth0Provider,
       options: {
         ...config.connection.saml.options,
-        signInEndpoint: `https://${config.auth0Provider.domain}/samlp/${idpInfo.client.clientId}`,
-        signOutEndpoint: `https://${config.auth0Provider.domain}/samlp/${idpInfo.client.clientId}/logout`,
+        signInEndpoint: `https://${config.env.DOMAIN}/samlp/${idpInfo.client.clientId}`,
+        signOutEndpoint: `https://${config.env.DOMAIN}/samlp/${idpInfo.client.clientId}/logout`,
         signingCert: Fn.base64encode(idpInfo.client.signingKeys.get(0).lookup("cert"))
       }
     })

@@ -15,14 +15,14 @@ class Stack extends BaseAuth0TerraformStack {
     super(scope, name)
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
-      domain: config.auth0Provider.domain,
-      clientId: config.auth0Provider.clientId,
-      clientSecret: config.auth0Provider.clientSecret
+      domain: config.env.DOMAIN,
+      clientId: config.env.CLIENT_ID,
+      clientSecret: config.env.CLIENT_SECRET
     })
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.m2mDefault,
+      ...config.client.m2m,
       name: this.id(name, "client")
     })
 

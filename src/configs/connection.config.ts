@@ -1,9 +1,9 @@
 import { ConnectionConfig } from "../../.gen/providers/auth0"
 import { DigestAlg, ProtocolBindings, SignatureAlg, Strategies } from "./Types"
 
-export const ConnectionAuth0BaseConfig = {
+const auth0: ConnectionConfig = {
   name: "CDKTF-Auth0-Base-Connection",
-  strategy: Strategies.auth0, 
+  strategy: Strategies.auth0,
   isDomainConnection: false,
   options: {
     mfa: {
@@ -21,9 +21,9 @@ export const ConnectionAuth0BaseConfig = {
     requiresUsername: false,
     bruteForceProtection: true
   }
-} as ConnectionConfig
+}
 
-export const ConnectionSamlBaseConfig = {
+const saml: ConnectionConfig = {
   name: "CDKTF-Saml-Base-Connection",
   strategy: Strategies.samlp,
   isDomainConnection: false,
@@ -34,4 +34,14 @@ export const ConnectionSamlBaseConfig = {
     signSamlRequest: true,
     signatureAlgorithm: SignatureAlg.RSASHA256,
   }
-} as ConnectionConfig
+}
+
+export interface IConnectionConfig {
+  auth0: ConnectionConfig
+  saml: ConnectionConfig
+}
+
+export const connectionConfig: IConnectionConfig = {
+  auth0,
+  saml
+}
