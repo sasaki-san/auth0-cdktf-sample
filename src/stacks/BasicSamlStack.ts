@@ -24,14 +24,14 @@ class BasicSamlIdpStack extends BaseAuth0TerraformStack {
       clientSecret: config.auth0Provider.clientSecret
     })
 
-    // Create an Auth0 Application - RegularWeb App with Saml Addon
+    // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.samlIdpDefault,
       name: this.id(name, "client"),
       callbacks: [`https://${config.samlSpAuth0Provider.domain}/login/callback?connection=${spConnName}`],
     })
 
-    // Create an Auth0 Connection (Username and Password)
+    // Create an Auth0 Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),

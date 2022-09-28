@@ -22,7 +22,7 @@ class Stack extends BaseAuth0TerraformStack {
       clientSecret: config.auth0Provider.clientSecret
     })
 
-    // Create an Auth0 Application - Native
+    // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.nativeDefault,
       name: this.id(name, "client"),

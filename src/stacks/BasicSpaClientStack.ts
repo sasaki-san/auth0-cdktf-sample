@@ -21,7 +21,7 @@ class Stack extends BaseAuth0TerraformStack {
       clientSecret: config.auth0Provider.clientSecret
     })
 
-    // Create an Auth0 Application - Native
+    // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.spaDefault,
       name: this.id(name, "client")
@@ -34,7 +34,7 @@ class Stack extends BaseAuth0TerraformStack {
       identifier: `https://${name}`,
     })
 
-    // Create an Auth0 Connection (Username and Password)
+    // Create an Auth0 Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.auth0,
       name: this.id(name, "connection"),
