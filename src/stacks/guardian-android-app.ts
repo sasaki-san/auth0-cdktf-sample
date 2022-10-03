@@ -3,7 +3,7 @@ import { App } from "cdktf";
 import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
-import { Policies } from "../configs/Types";
+import { Policies } from "../utils/Types";
 
 class Stack extends BaseAuth0TerraformStack {
 

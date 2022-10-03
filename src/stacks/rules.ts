@@ -18,8 +18,8 @@ class Stack extends BaseAuth0TerraformStack {
     })
 
     const enabledRules = [
-      { name: "Console Log", src: "console-log.js" },
-      { name: "Console Log 2", src: "console-log.js" }
+      { name: "Console Log Rule 1", src: "console-log.js" },
+      { name: "Console Log Rule 2", src: "console-log.js" }
     ]
 
     // Create Rules

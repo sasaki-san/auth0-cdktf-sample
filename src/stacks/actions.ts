@@ -3,7 +3,7 @@ import { App } from "cdktf";
 import { Action, Auth0Provider, TriggerBinding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
-import { NodeRuntime } from "../configs/Types";
+import { NodeRuntime } from "../utils/Types";
 
 class Stack extends BaseAuth0TerraformStack {
 

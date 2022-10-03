@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, Fn } from "cdktf";
+import { App } from "cdktf";
 import { Auth0Provider, Client, Connection, ResourceServer } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
@@ -41,10 +41,10 @@ class Stack extends BaseAuth0TerraformStack {
       options: {
         importMode: true,
         enabledDatabaseCustomization: true,
-        customScripts: Fn.jsondecode(Fn.jsonencode({
+        customScripts: {
           login: this.script("database", "auto-import-bcrypt.login.js"),
           get_user: this.script("database", "auto-import-bcrypt.getUser.js"),
-        }))
+        }
       }
     })
 

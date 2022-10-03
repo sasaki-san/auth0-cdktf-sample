@@ -10,6 +10,7 @@ tsconfig.tsbuildinfo
 !jest.config.js
 !setup.js
 
+.DS_Store
 .env
 .import
 !src/scripts/**/*.js

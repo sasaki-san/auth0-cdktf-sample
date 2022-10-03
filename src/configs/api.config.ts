@@ -1,5 +1,5 @@
 import { ResourceServerConfig } from "../../.gen/providers/auth0";
-import { AlgTypes } from "./Types";
+import { AlgTypes } from "../utils/Types";
 
 const _default: ResourceServerConfig = {
   name: "CDKTF-API",

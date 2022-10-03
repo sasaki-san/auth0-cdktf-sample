@@ -24,7 +24,7 @@ class BasicSamlIdpStack extends BaseAuth0TerraformStack {
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    // Create an Auth0 Application
+    // Create an Auth0 Application with Saml Addon
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.samlIdp,
       name: this.id(name, "client"),
@@ -62,14 +62,14 @@ class BasicSamlSpStack extends BaseAuth0TerraformStack {
       clientSecret: config.env.SAML_SP_CLIENT_SECRET
     })
 
-    // Create an Auth0 Application - RegularWeb App with Saml Addon
+    // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
       ...config.client.samlSp,
       name: this.id(name, "client-sp"),
       provider: this.auth0Provider
     })
 
-    // Create an Auth0 Connection (Username and Password)
+    // Create an Auth0 Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
       ...config.connection.saml,
       name: spConnName,
