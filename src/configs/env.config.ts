@@ -15,6 +15,8 @@ export interface IEnvConfig {
   GUARDIAN_AWS_REGION: string | undefined
   GUARDIAN_SNS_GCM_PLATFORM_APP_ARN: string | undefined
   GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: string | undefined
+  CLOUDFLARE_ZONE_ID: string | undefined
+  CLOUDFLARE_API_TOKEN: string | undefined
 }
 
 export const envConfig: IEnvConfig = {
@@ -32,4 +34,6 @@ export const envConfig: IEnvConfig = {
   GUARDIAN_AWS_REGION: process.env.GUARDIAN_AWS_REGION,
   GUARDIAN_SNS_GCM_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_GCM_PLATFORM_APP_ARN,
   GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_APNS_PLATFORM_APP_ARN,
+  CLOUDFLARE_ZONE_ID: process.env.CLOUDFLARE_ZONE_ID,
+  CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN
 } 

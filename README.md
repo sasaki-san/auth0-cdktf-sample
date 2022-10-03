@@ -150,3 +150,14 @@ Required `.env` parameters:
 - `GUARDIAN_SNS_GCM_PLATFORM_APP_ARN` (if using FCM)
 - `GUARDIAN_SNS_APNS_PLATFORM_APP_ARN` (if using APNS)
 
+### Custom Domain with Cloudflare
+```shell
+cdktf deploy custom-domain
+```
+Deploys a stack containing the following resources
+- Custom Domain with Auth0 Managed Certificate
+- CName Record (at Cloudflare)
+
+Required `.env` parameters:
+- `CLOUDFLARE_API_TOKEN` API Token at Cloudflare
+- `CLOUDFLARE_ZONE_ID` Zone ID at Cloudflare

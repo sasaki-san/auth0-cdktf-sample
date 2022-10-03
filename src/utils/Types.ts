@@ -59,3 +59,8 @@ export enum Policies {
   "AdaptiveMFA" = "confidence-score",
   "Always" = "all-applications"
 }
+
+export enum CustomDomainTypes {
+  auth0_managed_certs = "auth0_managed_certs",
+  self_managed_certs = "self_managed_certs"
+}
