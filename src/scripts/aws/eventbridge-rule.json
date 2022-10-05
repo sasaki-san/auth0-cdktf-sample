@@ -1,0 +1,10 @@
+{
+  "source": [{
+    "prefix": "aws.partner/auth0.com"
+  }],
+  "detail": {
+    "data": {
+      "type": ["s"] 
+    }
+  }
+}

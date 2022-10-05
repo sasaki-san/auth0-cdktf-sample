@@ -17,6 +17,10 @@ export interface IEnvConfig {
   GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: string | undefined
   CLOUDFLARE_ZONE_ID: string | undefined
   CLOUDFLARE_API_TOKEN: string | undefined
+  LOG_STREAM_AWS_ACCESS_KEY: string | undefined
+  LOG_STREAM_AWS_SECRET_KEY: string | undefined
+  LOG_STREAM_AWS_REGION: string | undefined
+  LOG_STREAM_AWS_ACCOUNT_ID: string | undefined
 }
 
 export const envConfig: IEnvConfig = {
@@ -35,5 +39,9 @@ export const envConfig: IEnvConfig = {
   GUARDIAN_SNS_GCM_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_GCM_PLATFORM_APP_ARN,
   GUARDIAN_SNS_APNS_PLATFORM_APP_ARN: process.env.GUARDIAN_SNS_APNS_PLATFORM_APP_ARN,
   CLOUDFLARE_ZONE_ID: process.env.CLOUDFLARE_ZONE_ID,
-  CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN
+  CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN,
+  LOG_STREAM_AWS_ACCESS_KEY: process.env.LOG_STREAM_AWS_ACCESS_KEY,
+  LOG_STREAM_AWS_SECRET_KEY: process.env.LOG_STREAM_AWS_SECRET_KEY,
+  LOG_STREAM_AWS_REGION: process.env.LOG_STREAM_AWS_REGION,
+  LOG_STREAM_AWS_ACCOUNT_ID: process.env.LOG_STREAM_AWS_ACCOUNT_ID,
 } 

@@ -5,7 +5,8 @@
   "sendCrashReports": "true",
   "terraformProviders": [
     "auth0/auth0",
-    "cloudflare/cloudflare"
+    "hashicorp/aws",
+    "cloudflare/cloudflar"
   ],
   "terraformModules": [],
   "context": {

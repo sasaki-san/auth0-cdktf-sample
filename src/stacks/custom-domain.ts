@@ -69,6 +69,6 @@ class Stack extends BaseAuth0TerraformStack {
 export default (app: App) => {
   new Stack(app, "custom-domain", {
     eTLD: "yusasaki0.app",
-    name: "cdktf-test"
+    name: "hello-world"
   });
 }

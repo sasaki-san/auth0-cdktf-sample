@@ -161,3 +161,20 @@ Deploys a stack containing the following resources
 Required `.env` parameters:
 - `CLOUDFLARE_API_TOKEN` API Token at Cloudflare
 - `CLOUDFLARE_ZONE_ID` Zone ID at Cloudflare
+
+### Log Streaming with AWS EventBridge
+```shell
+cdktf deploy log-stream-aws
+```
+Deploys a stack containing the following resources
+- Auth0 Log Streaming (Event Bridge)
+- AWS EventBridge Bus
+- AWS EventBridge Rule
+- AWS EventBridge Target
+- AWS CloudWatch Log Group
+
+Required `.env` parameters:
+- `LOG_STREAM_AWS_ACCESS_KEY`
+- `LOG_STREAM_AWS_SECRET_KEY`
+- `LOG_STREAM_AWS_REGION`
+- `LOG_STREAM_AWS_ACCOUNT_ID`

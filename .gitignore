@@ -14,3 +14,6 @@ tsconfig.tsbuildinfo
 .env
 .import
 !src/scripts/**/*.js
+
+# ignore any stack files that start with "my-*"
+src/stacks/my-*
