@@ -36,14 +36,14 @@ class Stack extends BaseAuth0TerraformStack {
       status: LogStreamStatus.active,
       sink: {
         awsAccountId: config.env.LOG_STREAM_AWS_ACCOUNT_ID,
-        awsRegion: config.env.LOG_STREAM_AWS_REGION
+        awsRegion: config.env.AWS_REGION
       }
     })
 
     this.awsProvider = new AwsProvider(this, this.id(name, "awsProvider"), {
-      region: config.env.LOG_STREAM_AWS_REGION,
-      accessKey: config.env.LOG_STREAM_AWS_ACCESS_KEY,
-      secretKey: config.env.LOG_STREAM_AWS_SECRET_KEY,
+      region: config.env.AWS_REGION,
+      accessKey: config.env.AWS_ACCESS_KEY_ID,
+      secretKey: config.env.AWS_ACCESS_SECRET_KEY,
     })
 
     this.awsEventBus = new CloudwatchEventBus(this, this.id(name, "aws-event-bus"), {
