@@ -3,30 +3,40 @@ import { Construct } from "constructs";
 import * as fs from "fs"
 import * as path from "path"
 
-export type ScriptTypes = "rules" | "actions" | "database" | "aws"
+export type AssetType =
+  "rules" |
+  "actions" |
+  "database" |
+  "aws" |
+  "email" |
+  "new-ul"
 
 export default abstract class BaseAuth0TerraformStack extends TerraformStack {
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
-
-
-  }
-
-  validateParameters = () => {
-
   }
 
   protected id = (appName: string, resourceName: string) => `${appName}-${resourceName}`
 
-  protected text = (dir: ScriptTypes, src: string): string => {
-    return fs.readFileSync(path.resolve(__dirname, "..", "scripts", dir, src), 'utf-8')
-  }
+  protected readAsset = (type: AssetType, name: string): string => {
+    const text = fs.readFileSync(path.resolve(__dirname, "..", "assets", type, name), 'utf-8')
 
-  protected script = (dir: ScriptTypes, src: string): string => {
-    const rawScript = this.text(dir, src)
-    // Apply encoding util to escape Terraform's reserved character set
-    return Fn.jsondecode(Fn.jsonencode(rawScript))
-  }
+    switch (type) {
+      case "email":
+      case "new-ul": {
+        return text
+      }
+      case "actions":
+      case "aws":
+      case "database":
+      case "rules": {
+        const escaped = Fn.jsondecode(Fn.jsonencode(text))
+        return escaped
+      }
+      default:
+        throw Error(`The type ${type} not defined`)
+    }
 
+  }
 }

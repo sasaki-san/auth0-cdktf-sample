@@ -42,8 +42,8 @@ class Stack extends BaseAuth0TerraformStack {
         importMode: true,
         enabledDatabaseCustomization: true,
         customScripts: {
-          login: this.script("database", "auto-import-bcrypt.login.js"),
-          get_user: this.script("database", "auto-import-bcrypt.getUser.js"),
+          login: this.readAsset("database", "auto-import-bcrypt.login.js"),
+          get_user: this.readAsset("database", "auto-import-bcrypt.getUser.js"),
         }
       }
     })

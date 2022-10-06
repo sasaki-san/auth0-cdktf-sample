@@ -53,7 +53,7 @@ class Stack extends BaseAuth0TerraformStack {
         name: action.name,
         runtime: NodeRuntime.node16,
         deploy: true,
-        code: this.script("actions", action.src),
+        code: this.readAsset("actions", action.src),
         supportedTriggers: action.trigger,
         dependencies: action.dependencies,
       })

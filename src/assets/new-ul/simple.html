@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <!--
+  {% for e in prompt.screen.texts %}   
+    {{ e[0] }}: {{ e[1] }} 
+  {% endfor %}  
+  -->
+<head>
+  {%- auth0:head -%}
+</head>
+
+<body>
+  {% for e in prompt.screen.texts %}   
+    {{ e[0] }}: {{ e[1] }} 
+  {% endfor %}  
+  {{ prompt.screen.texts }}
+  {%- auth0:widget -%}
+</body>
+
+</html>

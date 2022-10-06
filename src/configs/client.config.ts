@@ -1,13 +1,24 @@
 import { ClientConfig } from "../../.gen/providers/auth0"
 import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "../utils/Types"
 
-const native = {
-  isTokenEndpointIpHeaderTrusted: false,
-  name: "CDKTF Native Application",
+const common: ClientConfig = {
+  name: "CDKTF Application",
   isFirstParty: true,
+  logoUri: "https://raw.githubusercontent.com/sasaki-san/auth0-cdktf-sample/main/src/assets/images/terraform-logo.png",
   oidcConformant: true,
   ssoDisabled: false,
   crossOriginAuth: false,
+  jwtConfiguration: {
+    alg: AlgTypes.RS256,
+    lifetimeInSeconds: 36000,
+    secretEncoded: false
+  },
+  customLoginPageOn: true,
+  isTokenEndpointIpHeaderTrusted: false,
+}
+
+const native: ClientConfig = {
+  ...common,
   refreshToken: {
     expirationType: ExpirationTypes["non-expiring"],
     leeway: 0,
@@ -17,11 +28,6 @@ const native = {
     idleTokenLifetime: 1296000,
     rotationType: RotationTypes["non-rotating"],
   },
-  jwtConfiguration: {
-    alg: AlgTypes.RS256,
-    lifetimeInSeconds: 36000,
-    secretEncoded: false
-  },
   tokenEndpointAuthMethod: TokenEndpointAuthMethod.none,
   appType: AppTypes.native,
   grantTypes: [
@@ -29,16 +35,10 @@ const native = {
     GrantTypes.implicit,
     GrantTypes.refresh_token
   ],
-  customLoginPageOn: true,
 }
 
-const m2m = {
-  isTokenEndpointIpHeaderTrusted: false,
-  name: "CDKTF M2M Application",
-  isFirstParty: true,
-  oidcConformant: true,
-  ssoDisabled: false,
-  crossOriginAuth: false,
+const m2m: ClientConfig = {
+  ...common,
   refreshToken: {
     expirationType: ExpirationTypes["non-expiring"],
     leeway: 0,
@@ -47,27 +47,16 @@ const m2m = {
     tokenLifetime: 31557600,
     idleTokenLifetime: 2592000,
     rotationType: RotationTypes["non-rotating"],
-  },
-  jwtConfiguration: {
-    alg: AlgTypes.RS256,
-    lifetimeInSeconds: 36000,
-    secretEncoded: false
   },
   tokenEndpointAuthMethod: TokenEndpointAuthMethod.client_secret_post,
   appType: AppTypes.non_interactive,
   grantTypes: [
     GrantTypes.client_credentials
   ],
-  customLoginPageOn: true,
 }
 
-const rwa = {
-  isTokenEndpointIpHeaderTrusted: false,
-  name: "CDKTF RWA Application",
-  isFirstParty: true,
-  oidcConformant: true,
-  ssoDisabled: false,
-  crossOriginAuth: false,
+const rwa: ClientConfig = {
+  ...common,
   refreshToken: {
     expirationType: ExpirationTypes["non-expiring"],
     leeway: 0,
@@ -76,11 +65,6 @@ const rwa = {
     tokenLifetime: 31557600,
     idleTokenLifetime: 2592000,
     rotationType: RotationTypes["non-rotating"],
-  },
-  jwtConfiguration: {
-    alg: AlgTypes.RS256,
-    lifetimeInSeconds: 36000,
-    secretEncoded: false
   },
   tokenEndpointAuthMethod: TokenEndpointAuthMethod.client_secret_post,
   appType: AppTypes.regular_web,
@@ -90,16 +74,10 @@ const rwa = {
     GrantTypes.refresh_token,
     GrantTypes.client_credentials
   ],
-  customLoginPageOn: true,
 }
 
 const spa = {
-  isTokenEndpointIpHeaderTrusted: false,
-  name: "CDKTF SPA Application",
-  isFirstParty: true,
-  oidcConformant: true,
-  ssoDisabled: false,
-  crossOriginAuth: false,
+  ...common,
   refreshToken: {
     expirationType: ExpirationTypes.expiring,
     leeway: 0,
@@ -109,11 +87,6 @@ const spa = {
     infiniteIdleTokenLifetime: false,
     rotationType: RotationTypes.rotating,
   },
-  jwtConfiguration: {
-    alg: AlgTypes.RS256,
-    lifetimeInSeconds: 36000,
-    secretEncoded: false
-  },
   tokenEndpointAuthMethod: TokenEndpointAuthMethod.none,
   appType: AppTypes.spa,
   grantTypes: [
@@ -121,7 +94,6 @@ const spa = {
     GrantTypes.implicit,
     GrantTypes.refresh_token
   ],
-  customLoginPageOn: true,
 }
 
 const samlIdp = {

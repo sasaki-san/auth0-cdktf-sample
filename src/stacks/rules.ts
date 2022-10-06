@@ -26,7 +26,7 @@ class Stack extends BaseAuth0TerraformStack {
     enabledRules.forEach((rule, index) => {
       new Rule(this, this.id(name, `rule-${rule.name}`), {
         name: rule.name,
-        script: this.script("rules", rule.src),
+        script: this.readAsset("rules", rule.src),
         enabled: true,
         order: index + 1
       })

@@ -13,7 +13,7 @@ tsconfig.tsbuildinfo
 .DS_Store
 .env
 .import
-!src/scripts/**/*.js
+!src/assets/**/*
 
 # ignore any stack files that start with "my-*"
 src/stacks/my-*

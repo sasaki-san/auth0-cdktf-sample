@@ -55,10 +55,11 @@ class Stack extends BaseAuth0TerraformStack {
 
     this.awsEventRule = new CloudwatchEventRule(this, this.id(name, "aws-event-rule"), {
       provider: this.awsProvider,
+      dependsOn: [this.awsEventBus],
       name: this.id(name, "aws-event-rule"),
       description: "Auth0 Log Streaming",
       eventBusName: this.awsEventBus.name,
-      eventPattern: this.text("aws", "eventbridge-rule.json")
+      eventPattern: this.readAsset("aws", "eventbridge-rule.json")
     })
 
     this.awsCloudwatchLogGroup = new CloudwatchLogGroup(this, this.id(name, "aws-cloudwatch-loggroup"), {
@@ -68,6 +69,7 @@ class Stack extends BaseAuth0TerraformStack {
 
     this.awsEventTarget = new CloudwatchEventTarget(this, this.id(name, "aws-event-target"), {
       provider: this.awsProvider,
+      dependsOn: [this.awsCloudwatchLogGroup, this.awsEventRule],
       rule: this.awsEventRule.name,
       eventBusName: this.awsEventBus.name,
       targetId: "send-logs-to-cloudwatch",
