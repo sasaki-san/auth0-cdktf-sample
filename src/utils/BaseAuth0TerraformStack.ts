@@ -1,4 +1,4 @@
-import { Fn, TerraformStack } from "cdktf";
+import { TerraformStack } from "cdktf";
 import { Construct } from "constructs";
 import * as fs from "fs"
 import * as path from "path"
@@ -24,6 +24,7 @@ export default abstract class BaseAuth0TerraformStack extends TerraformStack {
     const text = fs.readFileSync(path.resolve(__dirname, "..", "assets", type, name), 'utf-8')
 
     switch (type) {
+      case "aws":
       case "email":
       case "new-ul":
       case "classic-ul":
@@ -31,12 +32,10 @@ export default abstract class BaseAuth0TerraformStack extends TerraformStack {
           return text
         }
       case "actions":
-      case "aws":
       case "database":
       case "rules":
         {
-          const escaped = Fn.jsondecode(Fn.jsonencode(text))
-          return escaped
+          return text.replace(/\$/g, "\$$$")
         }
       default:
         throw Error(`The type ${type} not defined`)
