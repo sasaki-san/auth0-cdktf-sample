@@ -9,7 +9,8 @@ export type AssetType =
   "database" |
   "aws" |
   "email" |
-  "new-ul"
+  "new-ul" |
+  "classic-ul"
 
 export default abstract class BaseAuth0TerraformStack extends TerraformStack {
 
@@ -24,16 +25,19 @@ export default abstract class BaseAuth0TerraformStack extends TerraformStack {
 
     switch (type) {
       case "email":
-      case "new-ul": {
-        return text
-      }
+      case "new-ul":
+      case "classic-ul":
+        {
+          return text
+        }
       case "actions":
       case "aws":
       case "database":
-      case "rules": {
-        const escaped = Fn.jsondecode(Fn.jsonencode(text))
-        return escaped
-      }
+      case "rules":
+        {
+          const escaped = Fn.jsondecode(Fn.jsonencode(text))
+          return escaped
+        }
       default:
         throw Error(`The type ${type} not defined`)
     }
