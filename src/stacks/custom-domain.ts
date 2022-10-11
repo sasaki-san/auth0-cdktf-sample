@@ -1,17 +1,17 @@
 import { Construct } from "constructs";
-import { App } from "cdktf";
+import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, CustomDomain, CustomDomainVerification, CustomDomainVerificationA } from "../../.gen/providers/auth0"
 import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
-import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 import { CustomDomainTypes } from "../utils/Types";
+import Utils from "../utils/Utils";
 
 interface CloudflareDnsConfig {
   eTLD: string
   name: string
 }
 
-class Stack extends BaseAuth0TerraformStack {
+class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly customDomain: CustomDomain
@@ -26,25 +26,25 @@ class Stack extends BaseAuth0TerraformStack {
       throw Error(`CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID must be set`)
     }
 
-    this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
+    this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    this.cloudFlareProvider = new CloudflareProvider(this, this.id(name, "cfProvider"), {
+    this.cloudFlareProvider = new CloudflareProvider(this, Utils.id(name, "cfProvider"), {
       apiToken: config.env.CLOUDFLARE_API_TOKEN,
     })
 
     // Create a custom domain entry at Auth0
-    this.customDomain = new CustomDomain(this, this.id(name, "customDomain"), {
+    this.customDomain = new CustomDomain(this, Utils.id(name, "customDomain"), {
       provider: this.auth0Provider,
       domain: `${dnsConfig.name}.${dnsConfig.eTLD}`,
       type: CustomDomainTypes.auth0_managed_certs,
     })
 
     // Create a DNS entry at CloudFlare
-    this.cloudFlareRecord = new Record(this, this.id(name, "cfRecord"), {
+    this.cloudFlareRecord = new Record(this, Utils.id(name, "cfRecord"), {
       provider: this.cloudFlareProvider,
       dependsOn: [this.customDomain],
       zoneId: config.env.CLOUDFLARE_ZONE_ID,
@@ -56,7 +56,7 @@ class Stack extends BaseAuth0TerraformStack {
     })
 
     // Verify the domain
-    this.customDomainVerification = new CustomDomainVerificationA(this, this.id(name, "customDomainVerification"), {
+    this.customDomainVerification = new CustomDomainVerificationA(this, Utils.id(name, "customDomainVerification"), {
       provider: this.auth0Provider,
       dependsOn: [this.cloudFlareRecord],
       customDomainId: this.customDomain.id,

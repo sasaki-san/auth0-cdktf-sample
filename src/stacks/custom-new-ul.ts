@@ -1,10 +1,10 @@
 import { Construct } from "constructs";
-import { App } from "cdktf";
+import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, Branding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import Utils from "../utils/Utils";
 
-class Stack extends BaseAuth0TerraformStack {
+class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
 
@@ -15,19 +15,19 @@ class Stack extends BaseAuth0TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
+    this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    new Branding(this, this.id(name, "branding"), {
+    new Branding(this, Utils.id(name, "branding"), {
       colors: {
         primary: "#0059d6",
         pageBackground: "#FFFFFF"
       },
       universalLogin: {
-        body: this.readAsset("new-ul", "simple.html")
+        body: Utils.readAsset("new-ul", "simple.html")
       }
     })
 

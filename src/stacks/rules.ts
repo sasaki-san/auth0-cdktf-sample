@@ -1,17 +1,17 @@
 import { Construct } from "constructs";
-import { App } from "cdktf";
+import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, Rule, RuleConfigA, RuleConfigAConfig } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import Utils from "../utils/Utils";
 
-class Stack extends BaseAuth0TerraformStack {
+class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
+    this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
       clientSecret: config.env.CLIENT_SECRET
@@ -24,9 +24,9 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create Rules
     enabledRules.forEach((rule, index) => {
-      new Rule(this, this.id(name, `rule-${rule.name}`), {
+      new Rule(this, Utils.id(name, `rule-${rule.name}`), {
         name: rule.name,
-        script: this.readAsset("rules", rule.src),
+        script: Utils.readAsset("rules", rule.src),
         enabled: true,
         order: index + 1
       })
@@ -39,7 +39,7 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create Rule Settings
     ruleConfigs.forEach((ruleConfig) => {
-      new RuleConfigA(this, this.id(name, `rule-config-${ruleConfig.key}`), ruleConfig)
+      new RuleConfigA(this, Utils.id(name, `rule-config-${ruleConfig.key}`), ruleConfig)
     })
 
   }

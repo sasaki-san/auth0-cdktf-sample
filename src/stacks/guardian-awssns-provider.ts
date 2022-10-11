@@ -1,15 +1,15 @@
 import { Construct } from "constructs";
-import { App, TerraformOutput } from "cdktf";
+import { App, TerraformOutput, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { SnsPlatformApplication } from "@cdktf/provider-aws/lib/sns-platform-application"
 import { SnsTopic } from "@cdktf/provider-aws/lib/sns-topic"
 import { SnsTopicSubscription } from "@cdktf/provider-aws/lib/sns-topic-subscription"
 import { config } from "../configs"
-import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 import { GuardianPhoneMessageTypes, GuardianPhoneProviderTypes, Policies } from "../utils/Types";
+import Utils from "../utils/Utils";
 
-class Stack extends BaseAuth0TerraformStack {
+class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly awsProvider: AwsProvider
@@ -42,51 +42,51 @@ class Stack extends BaseAuth0TerraformStack {
       throw Error(`AWS_REGION must be set`)
     }
 
-    this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
+    this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    this.awsProvider = new AwsProvider(this, this.id(name, "awsProvider"), {
+    this.awsProvider = new AwsProvider(this, Utils.id(name, "awsProvider"), {
       region: config.env.AWS_REGION,
       accessKey: config.env.AWS_ACCESS_KEY_ID,
       secretKey: config.env.AWS_ACCESS_SECRET_KEY,
     })
 
     // Create an Auth0 Application
-    this.client = new Client(this, this.id(name, "client"), {
+    this.client = new Client(this, Utils.id(name, "client"), {
       ...config.base.client.native,
-      name: this.id(name, "client"),
+      name: Utils.id(name, "client"),
       logoUri: `https://openmoji.org/data/color/svg/E047.svg`,
       callbacks: config.base.client.native.callbacks?.concat(config.env.MOBILE_ANDROID_CALLBACK)
     })
 
     // Create an Auth0 API 
-    this.resourceServer = new ResourceServer(this, this.id(name, "api"), {
+    this.resourceServer = new ResourceServer(this, Utils.id(name, "api"), {
       ...config.base.api.default,
-      name: this.id(name, "api"),
+      name: Utils.id(name, "api"),
       identifier: `https://${name}`,
       scopes: [{ value: "transfer:funds", description: "Transfer funds" }]
     })
 
     // Grant API permissions to the Applicaiton
-    this.clientGrants = new ClientGrant(this, this.id(name, "client-grants"), {
+    this.clientGrants = new ClientGrant(this, Utils.id(name, "client-grants"), {
       clientId: this.client.clientId,
       audience: this.resourceServer.identifier,
       scope: ["transfer:funds"]
     })
 
     // Create an Auth0 Connection
-    this.connection = new Connection(this, this.id(name, "connection"), {
+    this.connection = new Connection(this, Utils.id(name, "connection"), {
       provider: this.auth0Provider,
       ...config.base.connection.auth0,
-      name: this.id(name, "connection"),
+      name: Utils.id(name, "connection"),
       enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
     // Create a User in the created connection
-    this.user = new User(this, this.id(name, "user"), {
+    this.user = new User(this, Utils.id(name, "user"), {
       provider: this.auth0Provider,
       email: "john@gmail.com",
       password: "Password!",
@@ -94,12 +94,12 @@ class Stack extends BaseAuth0TerraformStack {
     })
 
     // Create a topic to subscribe SNS events
-    this.awsSnsTopic = new SnsTopic(this, this.id(name, "awssnstopic"), {
+    this.awsSnsTopic = new SnsTopic(this, Utils.id(name, "awssnstopic"), {
       provider: this.awsProvider,
-      name: this.id(name, "topic"),
+      name: Utils.id(name, "topic"),
     })
 
-    this.awsSnsTopicSubscription = new SnsTopicSubscription(this, this.id(name, "awssnstopicsub"), {
+    this.awsSnsTopicSubscription = new SnsTopicSubscription(this, Utils.id(name, "awssnstopicsub"), {
       provider: this.awsProvider,
       dependsOn: [this.awsSnsTopic],
       topicArn: this.awsSnsTopic.arn,
@@ -108,10 +108,10 @@ class Stack extends BaseAuth0TerraformStack {
       endpoint: config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL
     })
 
-    this.awsSnsPlatformApp = new SnsPlatformApplication(this, this.id(name, "awssnsplatformapp"), {
+    this.awsSnsPlatformApp = new SnsPlatformApplication(this, Utils.id(name, "awssnsplatformapp"), {
       provider: this.awsProvider,
       dependsOn: [this.awsSnsTopic],
-      name: this.id(name, "platformapp"),
+      name: Utils.id(name, "platformapp"),
       platform: "GCM",
       platformCredential: config.env.GUARDIAN_SNS_GCM_SERVER_KEY,
       eventDeliveryFailureTopicArn: this.awsSnsTopic.arn,
@@ -121,7 +121,7 @@ class Stack extends BaseAuth0TerraformStack {
     })
 
     // Terraform doesn't work with Amazon SNS part.
-    this.guardian = new Guardian(this, this.id(name, "guardian"), {
+    this.guardian = new Guardian(this, Utils.id(name, "guardian"), {
       provider: this.auth0Provider,
       policy: Policies.Always,
       phone: {
@@ -142,7 +142,7 @@ class Stack extends BaseAuth0TerraformStack {
       }
     })
 
-    new TerraformOutput(this, this.id(name, "snsPlatformAppArn"), {
+    new TerraformOutput(this, Utils.id(name, "snsPlatformAppArn"), {
       value: this.awsSnsPlatformApp.arn
     })
 

@@ -20,6 +20,8 @@ const withMfaGrantType = () => {
   ]
 }
 
+const id = (appName: string, resourceName: string) => `${appName}-${resourceName}`
+
 const readAsset = (type: AssetType, name: string): string => {
   const text = fs.readFileSync(path.resolve(__dirname, "..", "assets", type, name), 'utf-8')
   return text.replace(/\$/g, "\$$$")
@@ -27,6 +29,7 @@ const readAsset = (type: AssetType, name: string): string => {
 
 const Utils = {
   mfaGrantTypes: withMfaGrantType,
+  id,
   readAsset
 }
 

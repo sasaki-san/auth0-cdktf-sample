@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App } from "cdktf";
+import { App, TerraformStack } from "cdktf";
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { CloudwatchEventBus } from "@cdktf/provider-aws/lib/cloudwatch-event-bus"
 import { CloudwatchEventRule } from "@cdktf/provider-aws/lib/cloudwatch-event-rule"
@@ -7,10 +7,10 @@ import { CloudwatchEventTarget } from "@cdktf/provider-aws/lib/cloudwatch-event-
 import { CloudwatchLogGroup } from "@cdktf/provider-aws/lib/cloudwatch-log-group"
 import { Auth0Provider, LogStream } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
 import { LogStreamStatus, LogStreamTypes } from "../utils/Types";
+import Utils from "../utils/Utils";
 
-class Stack extends BaseAuth0TerraformStack {
+class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly awsProvider: AwsProvider
@@ -23,13 +23,13 @@ class Stack extends BaseAuth0TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
+    this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    this.logStream = new LogStream(this, this.id(name, "logstream"), {
+    this.logStream = new LogStream(this, Utils.id(name, "logstream"), {
       provider: this.auth0Provider,
       name: name,
       type: LogStreamTypes.eventbridge,
@@ -40,34 +40,34 @@ class Stack extends BaseAuth0TerraformStack {
       }
     })
 
-    this.awsProvider = new AwsProvider(this, this.id(name, "awsProvider"), {
+    this.awsProvider = new AwsProvider(this, Utils.id(name, "awsProvider"), {
       region: config.env.AWS_REGION,
       accessKey: config.env.AWS_ACCESS_KEY_ID,
       secretKey: config.env.AWS_ACCESS_SECRET_KEY,
     })
 
-    this.awsEventBus = new CloudwatchEventBus(this, this.id(name, "aws-event-bus"), {
+    this.awsEventBus = new CloudwatchEventBus(this, Utils.id(name, "aws-event-bus"), {
       provider: this.awsProvider,
       dependsOn: [this.logStream],
       name: this.logStream.sink.awsPartnerEventSource,
       eventSourceName: this.logStream.sink.awsPartnerEventSource
     })
 
-    this.awsEventRule = new CloudwatchEventRule(this, this.id(name, "aws-event-rule"), {
+    this.awsEventRule = new CloudwatchEventRule(this, Utils.id(name, "aws-event-rule"), {
       provider: this.awsProvider,
       dependsOn: [this.awsEventBus],
-      name: this.id(name, "aws-event-rule"),
+      name: Utils.id(name, "aws-event-rule"),
       description: "Auth0 Log Streaming",
       eventBusName: this.awsEventBus.name,
-      eventPattern: this.readAsset("aws", "eventbridge-rule.json")
+      eventPattern: Utils.readAsset("aws", "eventbridge-rule.json")
     })
 
-    this.awsCloudwatchLogGroup = new CloudwatchLogGroup(this, this.id(name, "aws-cloudwatch-loggroup"), {
+    this.awsCloudwatchLogGroup = new CloudwatchLogGroup(this, Utils.id(name, "aws-cloudwatch-loggroup"), {
       provider: this.awsProvider,
       name: `/aws/events/auth0-${name}`,
     })
 
-    this.awsEventTarget = new CloudwatchEventTarget(this, this.id(name, "aws-event-target"), {
+    this.awsEventTarget = new CloudwatchEventTarget(this, Utils.id(name, "aws-event-target"), {
       provider: this.awsProvider,
       dependsOn: [this.awsCloudwatchLogGroup, this.awsEventRule],
       rule: this.awsEventRule.name,
