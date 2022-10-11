@@ -27,10 +27,13 @@ const readAsset = (type: AssetType, name: string): string => {
   return text.replace(/\$/g, "\$$$")
 }
 
+const roboHash = (text: string) => `https://robohash.org/${text}.png`
+
 const Utils = {
   mfaGrantTypes: withMfaGrantType,
   id,
-  readAsset
+  readAsset,
+  roboHash
 }
 
 export default Utils

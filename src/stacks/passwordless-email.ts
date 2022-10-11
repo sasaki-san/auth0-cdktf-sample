@@ -58,10 +58,9 @@ class Stack extends TerraformStack {
 
     // Create a User in the connection
     this.user = new User(this, Utils.id(name, "user"), {
-      email: "john@gmail.com",
+      ...config.base.user.john,
       connectionName: this.connection.name,
-      emailVerified: true,
-      picture: `https://robohash.org/${name}.png`
+      picture: Utils.roboHash(name)
     })
 
     // Enable passwordless login

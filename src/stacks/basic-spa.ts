@@ -43,9 +43,9 @@ class Stack extends TerraformStack {
 
     // Create a User in the created connection
     this.user = new User(this, Utils.id(name, "user"), {
-      email: "john@gmail.com",
-      password: "Password!",
+      ...config.base.user.john,
       connectionName: this.connection.name,
+      picture: Utils.roboHash(name)
     })
 
   }

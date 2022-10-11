@@ -29,17 +29,6 @@ const email: ConnectionConfig = {
   strategy: Strategies.email,
   isDomainConnection: false,
   options: {
-    mfa: {
-      active: true,
-      returnEnrollSettings: true
-    },
-    validation: {
-      username: {
-        max: 15,
-        min: 1
-      }
-    },
-    passwordPolicy: "good",
     requiresUsername: false,
     name: "email",
     from: `{{ application.name }} \u003cadmin@myapp.com\u003e`,
