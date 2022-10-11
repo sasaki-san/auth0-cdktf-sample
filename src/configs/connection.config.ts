@@ -1,6 +1,6 @@
 import { ConnectionConfig } from "../../.gen/providers/auth0"
 import { DigestAlg, ProtocolBindings, SignatureAlg, Strategies } from "../utils/Types"
-import Utils from "../utils/Utils"
+import { Utils } from "../utils"
 
 const auth0: ConnectionConfig = {
   name: "CDKTF-Auth0-Base-Connection",

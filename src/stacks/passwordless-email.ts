@@ -2,8 +2,8 @@ import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, GlobalClient, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { GrantTypes } from "../utils/Types";
-import Utils from "../utils/Utils";
+import { GrantTypes, mfaGrantTypes } from "../utils/Types";
+import { Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -18,6 +18,8 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET"])
+
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
       clientId: config.env.CLIENT_ID,
@@ -30,7 +32,7 @@ class Stack extends TerraformStack {
       name: Utils.id(name, "client"),
       grantTypes: [
         GrantTypes.implicit,
-        ...Utils.mfaGrantTypes(),
+        ...mfaGrantTypes(),
         GrantTypes.passwordless_otp
       ]
     })

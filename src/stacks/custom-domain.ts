@@ -4,7 +4,7 @@ import { Auth0Provider, CustomDomain, CustomDomainVerification, CustomDomainVeri
 import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
 import { CustomDomainTypes } from "../utils/Types";
-import Utils from "../utils/Utils";
+import { Utils, Validators } from "../utils";
 
 interface CloudflareDnsConfig {
   eTLD: string
@@ -22,9 +22,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string, dnsConfig: CloudflareDnsConfig) {
     super(scope, name)
 
-    if (config.env.CLOUDFLARE_API_TOKEN === undefined || config.env.CLOUDFLARE_ZONE_ID === undefined) {
-      throw Error(`CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID must be set`)
-    }
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,

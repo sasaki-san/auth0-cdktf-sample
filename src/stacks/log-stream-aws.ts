@@ -8,7 +8,7 @@ import { CloudwatchLogGroup } from "@cdktf/provider-aws/lib/cloudwatch-log-group
 import { Auth0Provider, LogStream } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { LogStreamStatus, LogStreamTypes } from "../utils/Types";
-import Utils from "../utils/Utils";
+import { Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -22,6 +22,8 @@ class Stack extends TerraformStack {
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
+
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "LOG_STREAM_AWS_ACCOUNT_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,

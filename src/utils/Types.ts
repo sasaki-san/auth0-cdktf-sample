@@ -27,6 +27,21 @@ export enum GrantTypes {
   "passwordless_otp" = "http://auth0.com/oauth/grant-type/passwordless/otp"
 }
 
+export const mfaGrantTypes = () => {
+  return [
+    GrantTypes.mfa_oob,
+    GrantTypes.mfa_otp,
+    GrantTypes.mfa_recovery_code,
+  ]
+}
+
+export const passwordGrantTypes = () => {
+  return [
+    GrantTypes.password,
+    GrantTypes.passwordRealm,
+  ]
+}
+
 export enum RotationTypes {
   "non-rotating" = "non-rotating",
   rotating = "rotating"

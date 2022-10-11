@@ -7,7 +7,7 @@ import { SnsTopic } from "@cdktf/provider-aws/lib/sns-topic"
 import { SnsTopicSubscription } from "@cdktf/provider-aws/lib/sns-topic-subscription"
 import { config } from "../configs"
 import { GuardianPhoneMessageTypes, GuardianPhoneProviderTypes, Policies } from "../utils/Types";
-import Utils from "../utils/Utils";
+import { Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -26,21 +26,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    if (!config.env.GUARDIAN_SNS_GCM_SERVER_KEY) {
-      throw Error(`GUARDIAN_SNS_GCM_SERVER_KEY must be set`)
-    }
-    if (!config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL) {
-      throw Error(`GUARDIAN_SNS_EVENT_DELIVERY_EMAIL must be set`)
-    }
-    if (!config.env.AWS_ACCESS_KEY_ID) {
-      throw Error(`AWS_ACCESS_KEY_ID must be set`)
-    }
-    if (!config.env.AWS_ACCESS_SECRET_KEY) {
-      throw Error(`AWS_ACCESS_SECRET_KEY must be set`)
-    }
-    if (!config.env.AWS_REGION) {
-      throw Error(`AWS_REGION must be set`)
-    }
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "MOBILE_ANDROID_CALLBACK", "GUARDIAN_SNS_EVENT_DELIVERY_EMAIL", "GUARDIAN_SNS_GCM_SERVER_KEY"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,

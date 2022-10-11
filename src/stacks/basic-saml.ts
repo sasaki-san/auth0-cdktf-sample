@@ -2,7 +2,7 @@ import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, Connection, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import Utils from "../utils/Utils";
+import { Utils, Validators } from "../utils";
 
 interface IdpInfo {
   client: Client
@@ -17,6 +17,8 @@ class BasicSamlIdpStack extends TerraformStack {
 
   constructor(scope: Construct, name: string, spConnName: string) {
     super(scope, name)
+
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "SAML_SP_DOMAIN"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
@@ -55,6 +57,8 @@ class BasicSamlSpStack extends TerraformStack {
 
   constructor(scope: Construct, name: string, spConnName: string, idpInfo: IdpInfo) {
     super(scope, name)
+
+    Validators.valueExists(["SAML_SP_DOMAIN", "SAML_SP_CLIENT_ID", "SAML_SP_CLIENT_SECRET", "DOMAIN"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.SAML_SP_DOMAIN,

@@ -3,7 +3,7 @@ import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, EmailTemplate } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { EmailTemplates } from "../utils/Types";
-import Utils from "../utils/Utils";
+import { Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -11,6 +11,8 @@ class Stack extends TerraformStack {
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
+
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
