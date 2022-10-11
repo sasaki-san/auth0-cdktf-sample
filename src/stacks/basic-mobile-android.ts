@@ -24,7 +24,7 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.native,
+      ...config.base.client.native,
       name: this.id(name, "client"),
       logoUri: `https://openmoji.org/data/color/svg/E047.svg`,
       callbacks: config.env.MOBILE_ANDROID_CALLBACK,
@@ -32,7 +32,7 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 API 
     this.resourceServer = new ResourceServer(this, this.id(name, "api"), {
-      ...config.api.default,
+      ...config.base.api.default,
       name: this.id(name, "api"),
       identifier: `https://${name}`,
       scopes: [{ value: "transfer:funds", description: "Transfer funds" }]
@@ -47,13 +47,13 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Connection (Username and Password)
     this.connection = new Connection(this, this.id(name, "connection"), {
-      ...config.connection.auth0,
+      ...config.base.connection.auth0,
       name: this.id(name, "connection"),
       enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
     // Create a User in the created connection
-    this.user = new User(this, this.id(name, "user-john"), {
+    this.user = new User(this, this.id(name, "user"), {
       email: "john@gmail.com",
       password: "Password!",
       connectionName: this.connection.name,

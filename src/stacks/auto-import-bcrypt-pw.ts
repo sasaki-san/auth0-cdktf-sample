@@ -22,20 +22,20 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.spa,
+      ...config.base.client.spa,
       name: this.id(name, "client")
     })
 
     // Create an Auth0 API 
     this.resourceServer = new ResourceServer(this, this.id(name, "api"), {
-      ...config.api.default,
+      ...config.base.api.default,
       name: this.id(name, "api"),
       identifier: `https://${name}`,
     })
 
     // Create an Auth0 Connection 
     this.connection = new Connection(this, this.id(name, "connection"), {
-      ...config.connection.auth0,
+      ...config.base.connection.auth0,
       name: this.id(name, "connection"),
       enabledClients: [this.client.clientId, config.env.CLIENT_ID],
       options: {

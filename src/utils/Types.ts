@@ -23,27 +23,29 @@ export enum GrantTypes {
   "mfa_otp" = "http://auth0.com/oauth/grant-type/mfa-otp",
   "mfa_recovery_code" = "http://auth0.com/oauth/grant-type/mfa-recovery-code",
   "password" = "password",
-  "passwordRealm" = "http://auth0.com/oauth/grant-type/password-realm"
+  "passwordRealm" = "http://auth0.com/oauth/grant-type/password-realm",
+  "passwordless_otp" = "http://auth0.com/oauth/grant-type/passwordless/otp"
 }
 
 export enum RotationTypes {
   "non-rotating" = "non-rotating",
-  "rotating" = "rotating"
+  rotating = "rotating"
 }
 
 export enum ExpirationTypes {
   "non-expiring" = "non-expiring",
-  "expiring" = "expiring"
+  expiring = "expiring"
 }
 
 export enum NodeRuntime {
-  "node12" = "node12",
-  "node16" = "node16"
+  node12 = "node12",
+  node16 = "node16"
 }
 
 export enum Strategies {
-  "auth0" = "auth0",
-  "samlp" = "samlp"
+  auth0 = "auth0",
+  email = "email",
+  samlp = "samlp"
 }
 
 export enum DigestAlg {
@@ -166,4 +168,15 @@ export enum EmailTemplates {
   user_invitation = "user_invitation",
   change_password = "change_password",
   password_reset = "password_reset"
+}
+
+export enum GuardianPhoneProviderTypes {
+  auth0 = "auth0",
+  twilio = "twilio",
+  phone_message_hook = "phone-message-hook"
+}
+
+export enum GuardianPhoneMessageTypes {
+  sms = "sms",
+  voice = "voice"
 }

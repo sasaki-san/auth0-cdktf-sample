@@ -1,5 +1,6 @@
 import { ClientConfig } from "../../.gen/providers/auth0"
 import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "../utils/Types"
+import { envConfig } from "./env.config"
 
 const common: ClientConfig = {
   name: "CDKTF Application",
@@ -15,6 +16,7 @@ const common: ClientConfig = {
   },
   customLoginPageOn: true,
   isTokenEndpointIpHeaderTrusted: false,
+  callbacks: [envConfig.PROTOCOL_DEBUGGER_CALLBACK]
 }
 
 const native: ClientConfig = {

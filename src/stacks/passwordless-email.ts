@@ -1,8 +1,10 @@
 import { Construct } from "constructs";
 import { App } from "cdktf";
-import { Auth0Provider, Client, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
+import { Auth0Provider, Client, GlobalClient, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import { GrantTypes } from "../utils/Types";
+import Utils from "../utils/Utils";
 
 class Stack extends BaseAuth0TerraformStack {
 
@@ -12,6 +14,7 @@ class Stack extends BaseAuth0TerraformStack {
   readonly clientGrants: ClientGrant
   readonly connection: Connection
   readonly user: User
+  readonly globalClient: GlobalClient
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
@@ -24,11 +27,13 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.base.client.native,
+      ...config.base.client.rwa,
       name: this.id(name, "client"),
-      logoUri: `https://openmoji.org/data/color/svg/F8FF.svg`,
-      callbacks: config.env.MOBILE_IOS_CALLBACK,
-      allowedLogoutUrls: config.env.MOBILE_IOS_LOGOUT
+      grantTypes: [
+        GrantTypes.implicit,
+        ...Utils.mfaGrantTypes(),
+        GrantTypes.passwordless_otp
+      ]
     })
 
     // Create an Auth0 API 
@@ -46,23 +51,29 @@ class Stack extends BaseAuth0TerraformStack {
       scope: ["transfer:funds"]
     })
 
-    // Create an Auth0 Connection 
+    // Create a Passwordless - Email Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: this.id(name, "connection"),
+      ...config.base.connection.email,
       enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
-    // Create a User in the created connection
+    // Create a User in the connection
     this.user = new User(this, this.id(name, "user"), {
       email: "john@gmail.com",
-      password: "Password!",
       connectionName: this.connection.name,
+      emailVerified: true,
+      picture: `https://robohash.org/${name}.png`
+    })
+
+    // Enable passwordless login
+    this.globalClient = new GlobalClient(this, this.id(name, "globalclient"), {
+      customLoginPageOn: true,
+      customLoginPage: this.readAsset("classic-ul", "login.passwordless.html")
     })
 
   }
 }
 
 export default (app: App) => {
-  new Stack(app, "basic-mobile-ios");
+  new Stack(app, "passwordless-email");
 }

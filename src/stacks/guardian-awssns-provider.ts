@@ -1,12 +1,13 @@
 import { Construct } from "constructs";
 import { App, TerraformOutput } from "cdktf";
-import { Auth0Provider, Client, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
+import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { SnsPlatformApplication } from "@cdktf/provider-aws/lib/sns-platform-application"
 import { SnsTopic } from "@cdktf/provider-aws/lib/sns-topic"
 import { SnsTopicSubscription } from "@cdktf/provider-aws/lib/sns-topic-subscription"
 import { config } from "../configs"
 import BaseAuth0TerraformStack from "../utils/BaseAuth0TerraformStack";
+import { GuardianPhoneMessageTypes, GuardianPhoneProviderTypes, Policies } from "../utils/Types";
 
 class Stack extends BaseAuth0TerraformStack {
 
@@ -20,6 +21,7 @@ class Stack extends BaseAuth0TerraformStack {
   readonly awsSnsTopic?: SnsTopic
   readonly awsSnsTopicSubscription?: SnsTopicSubscription
   readonly awsSnsPlatformApp: SnsPlatformApplication
+  readonly guardian: Guardian
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
@@ -29,6 +31,15 @@ class Stack extends BaseAuth0TerraformStack {
     }
     if (!config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL) {
       throw Error(`GUARDIAN_SNS_EVENT_DELIVERY_EMAIL must be set`)
+    }
+    if (!config.env.AWS_ACCESS_KEY_ID) {
+      throw Error(`AWS_ACCESS_KEY_ID must be set`)
+    }
+    if (!config.env.AWS_ACCESS_SECRET_KEY) {
+      throw Error(`AWS_ACCESS_SECRET_KEY must be set`)
+    }
+    if (!config.env.AWS_REGION) {
+      throw Error(`AWS_REGION must be set`)
     }
 
     this.auth0Provider = new Auth0Provider(this, this.id(name, "auth0provider"), {
@@ -45,15 +56,15 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Application
     this.client = new Client(this, this.id(name, "client"), {
-      ...config.client.native,
+      ...config.base.client.native,
       name: this.id(name, "client"),
       logoUri: `https://openmoji.org/data/color/svg/E047.svg`,
-      callbacks: config.env.MOBILE_ANDROID_CALLBACK,
+      callbacks: config.base.client.native.callbacks?.concat(config.env.MOBILE_ANDROID_CALLBACK)
     })
 
     // Create an Auth0 API 
     this.resourceServer = new ResourceServer(this, this.id(name, "api"), {
-      ...config.api.default,
+      ...config.base.api.default,
       name: this.id(name, "api"),
       identifier: `https://${name}`,
       scopes: [{ value: "transfer:funds", description: "Transfer funds" }]
@@ -68,13 +79,15 @@ class Stack extends BaseAuth0TerraformStack {
 
     // Create an Auth0 Connection
     this.connection = new Connection(this, this.id(name, "connection"), {
-      ...config.connection.auth0,
+      provider: this.auth0Provider,
+      ...config.base.connection.auth0,
       name: this.id(name, "connection"),
       enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
     // Create a User in the created connection
-    this.user = new User(this, this.id(name, "user-john"), {
+    this.user = new User(this, this.id(name, "user"), {
+      provider: this.auth0Provider,
       email: "john@gmail.com",
       password: "Password!",
       connectionName: this.connection.name,
@@ -92,7 +105,7 @@ class Stack extends BaseAuth0TerraformStack {
       topicArn: this.awsSnsTopic.arn,
       endpointAutoConfirms: true,
       protocol: "email",
-      endpoint: config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL 
+      endpoint: config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL
     })
 
     this.awsSnsPlatformApp = new SnsPlatformApplication(this, this.id(name, "awssnsplatformapp"), {
@@ -107,27 +120,31 @@ class Stack extends BaseAuth0TerraformStack {
       eventEndpointUpdatedTopicArn: this.awsSnsTopic.arn
     })
 
+    // Terraform doesn't work with Amazon SNS part.
+    this.guardian = new Guardian(this, this.id(name, "guardian"), {
+      provider: this.auth0Provider,
+      policy: Policies.Always,
+      phone: {
+        provider: GuardianPhoneProviderTypes.auth0,
+        messageTypes: [GuardianPhoneMessageTypes.sms]
+      },
+      push: {
+        customApp: {
+          appName: name,
+        },
+        amazonSns: {
+          awsAccessKeyId: config.env.AWS_ACCESS_KEY_ID,
+          awsSecretAccessKey: config.env.AWS_ACCESS_SECRET_KEY,
+          awsRegion: config.env.AWS_REGION,
+          snsGcmPlatformApplicationArn: this.awsSnsPlatformApp.arn,
+          snsApnsPlatformApplicationArn: "",
+        }
+      }
+    })
+
     new TerraformOutput(this, this.id(name, "snsPlatformAppArn"), {
       value: this.awsSnsPlatformApp.arn
     })
-
-    // Terraform doesn't work with Amazon SNS part.
-    // this.guardian = new Guardian(this, this.id(name, "guardian"), {
-    //   provider: this.auth0Provider,
-    //   policy: Policies.Always,
-    //   push: {
-    //     customApp: {
-    //       appName: name,
-    //     },
-    //     amazonSns: {
-    //       awsAccessKeyId: config.env.GUARDIAN_AWS_ACCESS_KEY_ID!,
-    //       awsSecretAccessKey: config.env.GUARDIAN_AWS_ACCESS_SECRET_KEY!,
-    //       awsRegion: config.env.GUARDIAN_AWS_REGION!,
-    //       snsGcmPlatformApplicationArn: this.snsPlatformApp.arn
-    //       snsApnsPlatformApplicationArn: "",
-    //     }
-    //   }
-    // })
 
   }
 }
