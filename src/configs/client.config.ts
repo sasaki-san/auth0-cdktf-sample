@@ -78,7 +78,7 @@ const rwa: ClientConfig = {
   ],
 }
 
-const spa = {
+const spa: ClientConfig = {
   ...common,
   refreshToken: {
     expirationType: ExpirationTypes.expiring,
@@ -98,24 +98,12 @@ const spa = {
   ],
 }
 
-const samlIdp = {
+const samlIdp: ClientConfig = {
   ...rwa,
   name: "CDKTF SAML IDP Application",
   callbacks: ["TBD"],
   addons: {
-    samlp: {
-      createUpnClaim: false,
-      digestAlgorithm: "sha256",
-      includeAttributeNameFormat: false,
-      mapIdentities: false,
-      mapUnknownClaimsAsIs: false,
-      mappings: {},
-      nameIdentifierProbes: [],
-      passthroughClaimsWithNoMapping: false,
-      signResponse: false,
-      signatureAlgorithm: "rsa-sha256",
-      typedAttributes: false
-    }
+    samlp: {},
   }
 }
 

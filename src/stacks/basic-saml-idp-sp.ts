@@ -1,6 +1,6 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, Client, Connection, User } from "../../.gen/providers/auth0"
+import { Auth0Provider, Client, Connection, Rule, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
 
@@ -10,10 +10,12 @@ class Stack extends TerraformStack {
   readonly idpClient: Client
   readonly idpConnection: Connection
   readonly idpUser: User
+  readonly idpRule: Rule
 
   readonly spAuth0Provider: Auth0Provider
   readonly spClient: Client
   readonly spConnection: Connection
+  readonly spRule: Rule
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
@@ -50,7 +52,18 @@ class Stack extends TerraformStack {
       provider: this.idpAuth0Provider,
       ...config.base.user.john,
       connectionName: this.idpConnection.name,
-      picture: Utils.roboHash(name)
+      picture: Utils.roboHash(name),
+      userMetadata: JSON.stringify({
+        favorite_color: "red"
+      })
+    })
+
+    // Create a rule that performs user profile mappings
+    this.idpRule = new Rule(this, Utils.id(name, `rule-idp`), {
+      provider: this.idpAuth0Provider,
+      name: `${name}-saml-idp-attr-mapping`,
+      script: Utils.readAsset("rules", "saml-idp-attr-mapping.js"),
+      enabled: true,
     })
 
     // SP
@@ -83,8 +96,20 @@ class Stack extends TerraformStack {
         ...config.base.connection.saml.options,
         signInEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}`,
         signOutEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}/logout`,
-        signingCert: Fn.base64encode(Fn.lookup(Fn.element(this.idpClient.signingKeys, 0), "cert", ""))
+        signingCert: Fn.base64encode(Fn.lookup(Fn.element(this.idpClient.signingKeys, 0), "cert", "")),
+        debug: true,
+        fieldsMap: JSON.stringify({
+          saml_profile_data_color: "http://schemas.my-cdktf-stack.me/claims/color"
+        })
       }
+    })
+
+    // Create a rule that performs user profile mappings
+    this.spRule = new Rule(this, Utils.id(name, `rule-sp`), {
+      provider: this.spAuth0Provider,
+      name: `${name}-saml-sp-attr-mapping`,
+      script: Utils.readAsset("rules", "saml-sp-attr-mapping.js"),
+      enabled: true,
     })
 
   }
@@ -92,5 +117,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "basic-saml")
+  new Stack(app, "basic-saml-idp-sp")
 }
