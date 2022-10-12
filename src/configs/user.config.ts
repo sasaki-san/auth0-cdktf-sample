@@ -5,6 +5,7 @@ const john: UserConfig = {
   connectionName: "TBD",
   email: "john@gmail.com",
   emailVerified: true,
+  password: "Password!"
 }
 
 export interface IUserConfig {

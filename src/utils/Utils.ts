@@ -20,10 +20,13 @@ const readAsset = (type: AssetType, name: string): string => {
 
 const roboHash = (text: string) => `https://robohash.org/${text}.png`
 
+const auth0AuthApiDebuggerUrl = (domain: string) => `https://${domain.replace("auth0.com", "webtask.run")}/auth0-authentication-api-debugger`
+
 const Utils = {
   id,
   readAsset,
   roboHash,
+  auth0AuthApiDebuggerUrl,
 }
 
 export default Utils
