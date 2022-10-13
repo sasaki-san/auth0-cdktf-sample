@@ -14,14 +14,10 @@ class Stack extends TerraformStack {
   readonly cloudFlareRecord: Record
   readonly customDomainVerification: CustomDomainVerification
 
-  extractVerificationRecord = () => {
-
-  }
-
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "CUSTOM_DOMAIN", "CUSTOM_DOMAIN_ETLD", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "CUSTOM_DOMAIN", "CUSTOM_DOMAIN_ETLD", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
@@ -45,7 +41,7 @@ class Stack extends TerraformStack {
       provider: this.cloudFlareProvider,
       dependsOn: [this.customDomain],
       zoneId: config.env.CLOUDFLARE_ZONE_ID,
-      name: config.env.CUSTOM_DOMAIN.replace(`.${config.env.CUSTOM_DOMAIN_ETLD}`, ""),
+      name: config.env.CUSTOM_DOMAIN.replace(`${config.env.CUSTOM_DOMAIN_ETLD}`, ""),
       type: "CNAME",
       ttl: 1, // AUTO
       value: Fn.lookup(Fn.element(this.customDomain.verification.get(0).methods, 0), "record", "FAILED_TO_GET_RECORD"),

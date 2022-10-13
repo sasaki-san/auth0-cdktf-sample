@@ -20,7 +20,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "SAML_SP_DOMAIN", "SAML_SP_CLIENT_ID", "SAML_SP_CLIENT_SECRET"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "SAML_SP_DOMAIN", "SAML_SP_CLIENT_ID", "SAML_SP_CLIENT_SECRET"])
 
     // IDP
 

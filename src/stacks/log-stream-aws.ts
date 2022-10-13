@@ -23,7 +23,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "LOG_STREAM_AWS_ACCOUNT_ID"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "LOG_STREAM_AWS_ACCOUNT_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,

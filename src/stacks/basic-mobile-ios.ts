@@ -16,7 +16,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "MOBILE_IOS_CALLBACK", "MOBILE_IOS_LOGOUT"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "MOBILE_IOS_CALLBACK", "MOBILE_IOS_LOGOUT"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,

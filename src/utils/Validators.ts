@@ -1,7 +1,7 @@
 import { config } from "../configs"
 import { IEnvConfig } from "../configs/env.config"
 
-function valueExists<T extends IEnvConfig, K extends keyof T>(keys: K[]): void {
+const validateEnvValues = <T extends IEnvConfig, K extends keyof T>(keys: K[]): void => {
   for (let key of keys) {
     const value = (config.env as T)[key]
     if (value === null || value === undefined || value === "") {
@@ -11,7 +11,7 @@ function valueExists<T extends IEnvConfig, K extends keyof T>(keys: K[]): void {
 }
 
 const Validators = {
-  valueExists
+  validateEnvValues
 }
 
 export default Validators
