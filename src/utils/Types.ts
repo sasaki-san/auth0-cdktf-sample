@@ -196,6 +196,15 @@ enum GuardianPhoneMessageTypes {
   voice = "voice"
 }
 
+const ActionCurrentTriggers = {
+  post_login: ({ id: "post-login", version: "v3" }),
+  credentials_exchange: ({ id: "credentials-exchange", version: "v2" }),
+  pre_user_registration: ({ id: "pre-user-registration", version: "v2" }),
+  post_user_registration: ({ id: "post-user-registration", version: "v2" }),
+  post_change_password: ({ id: "post-change-password", version: "v2" }),
+  send_phone_message: ({ id: "send-phone-message", version: "v2" })
+}
+
 const Types = {
   AppTypes,
   TokenEndpointAuthMethod,
@@ -219,6 +228,7 @@ const Types = {
   EmailTemplates,
   GuardianPhoneProviderTypes,
   GuardianPhoneMessageTypes,
+  ActionCurrentTriggers
 }
 
 export default Types

@@ -7,7 +7,9 @@ import { Types, Utils, Validators } from "../utils";
 class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
-  readonly actions: Action[]
+  readonly postLoginAction: Action
+  readonly preUserRegistrationAction: Action
+  readonly postChangePasswordAction: Action
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
@@ -20,51 +22,71 @@ class Stack extends TerraformStack {
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    const enabledActions = [
-      {
-        name: "Console Log Action 1",
-        src: "console-log.js",
-        dependencies: [
-          { name: "lodash", version: "latest" },
-          { name: "reques", version: "latest" }
-        ],
-        secrets: [
-          { name: "secret-1", value: "password" },
-          { name: "secret-2", value: "password" }
-        ],
-        trigger: { id: "post-login", version: "v3" }
-      },
-      {
-        name: "Console Log Action 2",
-        src: "console-log.js",
-        dependencies: [
-          { name: "auth0", version: "latest" }
-        ],
-        secrets: [
-          { name: "secret-3", value: "password" },
-          { name: "secret-4", value: "password" }
-        ],
-        trigger: { id: "post-login", version: "v3" }
-      },
-    ]
+    // Post login action
 
-    // Create actions
-    this.actions = enabledActions.map(action => {
-      return new Action(this, Utils.id(name, `action-${action.name}`), {
-        name: action.name,
-        runtime: Types.NodeRuntime.node16,
-        deploy: true,
-        code: Utils.readAsset("actions", action.src),
-        supportedTriggers: action.trigger,
-        dependencies: action.dependencies,
-      })
+    this.postLoginAction = new Action(this, Utils.id(name, `action-postlogin`), {
+      name: Utils.id(name, `action-postlogin`),
+      runtime: Types.NodeRuntime.node16,
+      deploy: true,
+      code: Utils.readAsset("actions", "console-log.js"),
+      supportedTriggers: Types.ActionCurrentTriggers.post_login,
+      dependencies: [
+        { name: "lodash", version: "latest" },
+        { name: "reques", version: "latest" }
+      ]
     })
 
-    // Add the created actions to Login flow
-    new TriggerBinding(this, Utils.id(name, `trigger-binding`), {
-      trigger: "post-login",
-      actions: this.actions.map(a => ({ id: a.id, displayName: a.name }))
+    new TriggerBinding(this, Utils.id(name, `triggerbinding-postlogin`), {
+      dependsOn: [this.postLoginAction],
+      trigger: Types.ActionCurrentTriggers.post_login.id,
+      actions: [{ id: this.postLoginAction.id, displayName: this.postLoginAction.id }]
     })
+
+    // // Pre user registration action
+
+    this.preUserRegistrationAction = new Action(this, Utils.id(name, `action-preuserreg`), {
+      name: Utils.id(name, `action-preuserreg`),
+      runtime: Types.NodeRuntime.node16,
+      deploy: true,
+      code: Utils.readAsset("actions", "console-log.js"),
+      supportedTriggers: Types.ActionCurrentTriggers.pre_user_registration,
+      dependencies: [
+        { name: "lodash", version: "latest" },
+        { name: "reques", version: "latest" }
+      ]
+    })
+
+    new TriggerBinding(this, Utils.id(name, `triggerbinding-preuserreg`), {
+      dependsOn: [this.preUserRegistrationAction],
+      trigger: Types.ActionCurrentTriggers.pre_user_registration.id,
+      actions: [{ id: this.preUserRegistrationAction.id, displayName: this.preUserRegistrationAction.id }]
+    })
+
+    // Post change password action
+
+    this.postChangePasswordAction = new Action(this, Utils.id(name, `action-postchpw`), {
+      name: Utils.id(name, `action-postchpw`),
+      runtime: Types.NodeRuntime.node16,
+      deploy: true,
+      code: Utils.readAsset("actions", "post-change-pw-send-email.js"),
+      supportedTriggers: Types.ActionCurrentTriggers.post_change_password,
+      dependencies: [
+        { name: "nodemailer", version: "latest" }
+      ],
+      secrets: [
+        { name: "SMTP_HOST", value: config.env.SMTP_HOST },
+        { name: "SMTP_PORT", value: config.env.SMTP_PORT },
+        { name: "SMTP_AUTH_USER", value: config.env.SMTP_AUTH_USER },
+        { name: "SMTP_AUTH_PASS", value: config.env.SMTP_AUTH_PASS },
+      ]
+    })
+
+    new TriggerBinding(this, Utils.id(name, `triggerbinding-postchpw`), {
+      dependsOn: [this.postChangePasswordAction],
+      trigger: Types.ActionCurrentTriggers.post_change_password.id,
+      actions: [{ id: this.postChangePasswordAction.id, displayName: this.postChangePasswordAction.id }]
+    })
+
   }
 }
 

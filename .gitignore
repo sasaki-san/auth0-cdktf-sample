@@ -16,4 +16,4 @@ tsconfig.tsbuildinfo
 !src/assets/**/*
 
 # ignore any stack files that start with "my-*"
-src/stacks/my-*
+src/**/my-*
