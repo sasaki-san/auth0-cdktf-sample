@@ -1,15 +1,10 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, CustomDomain, CustomDomainVerification, CustomDomainVerificationA } from "../../.gen/providers/auth0"
 import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
 import { CustomDomainTypes } from "../utils/Types";
 import { Utils, Validators } from "../utils";
-
-interface CloudflareDnsConfig {
-  eTLD: string
-  name: string
-}
 
 class Stack extends TerraformStack {
 
@@ -19,10 +14,14 @@ class Stack extends TerraformStack {
   readonly cloudFlareRecord: Record
   readonly customDomainVerification: CustomDomainVerification
 
-  constructor(scope: Construct, name: string, dnsConfig: CloudflareDnsConfig) {
+  extractVerificationRecord = () => {
+
+  }
+
+  constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"])
+    Validators.valueExists(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "CUSTOM_DOMAIN", "CUSTOM_DOMAIN_ETLD", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
@@ -37,7 +36,7 @@ class Stack extends TerraformStack {
     // Create a custom domain entry at Auth0
     this.customDomain = new CustomDomain(this, Utils.id(name, "customDomain"), {
       provider: this.auth0Provider,
-      domain: `${dnsConfig.name}.${dnsConfig.eTLD}`,
+      domain: config.env.CUSTOM_DOMAIN,
       type: CustomDomainTypes.auth0_managed_certs,
     })
 
@@ -46,10 +45,10 @@ class Stack extends TerraformStack {
       provider: this.cloudFlareProvider,
       dependsOn: [this.customDomain],
       zoneId: config.env.CLOUDFLARE_ZONE_ID,
-      name: dnsConfig.name,
+      name: config.env.CUSTOM_DOMAIN.replace(`.${config.env.CUSTOM_DOMAIN_ETLD}`, ""),
       type: "CNAME",
       ttl: 1, // AUTO
-      value: this.customDomain.verification.get(0).methods.get(0).lookup("record"),
+      value: Fn.lookup(Fn.element(this.customDomain.verification.get(0).methods, 0), "record", "FAILED_TO_GET_RECORD"),
       proxied: false
     })
 
@@ -65,8 +64,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "custom-domain", {
-    eTLD: "yusasaki0.app",
-    name: "hello-world"
-  });
+  new Stack(app, "custom-domain-cloudflare");
 }

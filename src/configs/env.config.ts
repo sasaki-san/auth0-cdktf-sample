@@ -4,6 +4,8 @@ export interface IEnvConfig {
   DOMAIN: string
   CLIENT_ID: string
   CLIENT_SECRET: string
+  CUSTOM_DOMAIN: string
+  CUSTOM_DOMAIN_ETLD: string
   SAML_SP_DOMAIN: string
   SAML_SP_CLIENT_ID: string
   SAML_SP_CLIENT_SECRET: string
@@ -27,6 +29,8 @@ export const envConfig: IEnvConfig = {
   DOMAIN: process.env.DOMAIN!,
   CLIENT_ID: process.env.CLIENT_ID!,
   CLIENT_SECRET: process.env.CLIENT_SECRET!,
+  CUSTOM_DOMAIN: process.env.CUSTOM_DOMAIN!,
+  CUSTOM_DOMAIN_ETLD: process.env.CUSTOM_DOMAIN_ETLD!,
   SAML_SP_DOMAIN: process.env.SAML_SP_DOMAIN!,
   SAML_SP_CLIENT_ID: process.env.SAML_SP_CLIENT_ID!,
   SAML_SP_CLIENT_SECRET: process.env.SAML_SP_CLIENT_SECRET!,
