@@ -2,8 +2,7 @@ import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, PromptCustomText, } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { PromptGroups, PromptLangs } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -21,8 +20,8 @@ class Stack extends TerraformStack {
     })
 
     new PromptCustomText(this, Utils.id(name, "prompt"), {
-      prompt: PromptGroups.login,
-      language: PromptLangs.en,
+      prompt: Types.PromptGroups.login,
+      language: Types.PromptLangs.en,
       body: Fn.jsonencode({
         "login": {
           "title": "Welcome"

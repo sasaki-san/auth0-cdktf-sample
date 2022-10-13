@@ -1,10 +1,9 @@
 import { ConnectionConfig } from "../../.gen/providers/auth0"
-import { DigestAlg, ProtocolBindings, SignatureAlg, Strategies } from "../utils/Types"
-import { Utils } from "../utils"
+import { Types, Utils } from "../utils"
 
 const auth0: ConnectionConfig = {
   name: "CDKTF-Auth0-Base-Connection",
-  strategy: Strategies.auth0,
+  strategy: Types.Strategies.auth0,
   isDomainConnection: false,
   options: {
     mfa: {
@@ -26,7 +25,7 @@ const auth0: ConnectionConfig = {
 
 const email: ConnectionConfig = {
   name: "email",
-  strategy: Strategies.email,
+  strategy: Types.Strategies.email,
   isDomainConnection: false,
   options: {
     requiresUsername: false,
@@ -46,14 +45,14 @@ const email: ConnectionConfig = {
 
 const saml: ConnectionConfig = {
   name: "CDKTF-Saml-Base-Connection",
-  strategy: Strategies.samlp,
+  strategy: Types.Strategies.samlp,
   isDomainConnection: false,
   showAsButton: true,
   options: {
-    digestAlgorithm: DigestAlg.sha256,
-    protocolBinding: ProtocolBindings.POST,
+    digestAlgorithm: Types.DigestAlg.sha256,
+    protocolBinding: Types.ProtocolBindings.POST,
     signSamlRequest: true,
-    signatureAlgorithm: SignatureAlg.RSASHA256,
+    signatureAlgorithm: Types.SignatureAlg.RSASHA256,
   }
 }
 

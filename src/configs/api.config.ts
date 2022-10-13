@@ -1,5 +1,5 @@
 import { ResourceServerConfig } from "../../.gen/providers/auth0";
-import { AlgTypes } from "../utils/Types";
+import { Types } from "../utils";
 
 const _default: ResourceServerConfig = {
   name: "CDKTF-API",
@@ -8,7 +8,7 @@ const _default: ResourceServerConfig = {
   skipConsentForVerifiableFirstPartyClients: true,
   tokenLifetime: 86400,
   tokenLifetimeForWeb: 7200,
-  signingAlg: AlgTypes.RS256,
+  signingAlg: Types.AlgTypes.RS256,
 }
 
 export interface IApiConfig {

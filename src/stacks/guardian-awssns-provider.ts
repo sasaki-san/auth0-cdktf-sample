@@ -6,8 +6,7 @@ import { SnsPlatformApplication } from "@cdktf/provider-aws/lib/sns-platform-app
 import { SnsTopic } from "@cdktf/provider-aws/lib/sns-topic"
 import { SnsTopicSubscription } from "@cdktf/provider-aws/lib/sns-topic-subscription"
 import { config } from "../configs"
-import { GuardianPhoneMessageTypes, GuardianPhoneProviderTypes, Policies } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -109,10 +108,10 @@ class Stack extends TerraformStack {
     // Terraform doesn't work with Amazon SNS part.
     this.guardian = new Guardian(this, Utils.id(name, "guardian"), {
       provider: this.auth0Provider,
-      policy: Policies.Always,
+      policy: Types.Policies.Always,
       phone: {
-        provider: GuardianPhoneProviderTypes.auth0,
-        messageTypes: [GuardianPhoneMessageTypes.sms]
+        provider: Types.GuardianPhoneProviderTypes.auth0,
+        messageTypes: [Types.GuardianPhoneMessageTypes.sms]
       },
       push: {
         customApp: {

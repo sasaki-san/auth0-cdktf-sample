@@ -2,8 +2,7 @@ import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
 import { Action, Auth0Provider, TriggerBinding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { NodeRuntime } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -53,7 +52,7 @@ class Stack extends TerraformStack {
     this.actions = enabledActions.map(action => {
       return new Action(this, Utils.id(name, `action-${action.name}`), {
         name: action.name,
-        runtime: NodeRuntime.node16,
+        runtime: Types.NodeRuntime.node16,
         deploy: true,
         code: Utils.readAsset("actions", action.src),
         supportedTriggers: action.trigger,

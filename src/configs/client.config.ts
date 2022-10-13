@@ -1,5 +1,5 @@
 import { ClientConfig } from "../../.gen/providers/auth0"
-import { AlgTypes, AppTypes, ExpirationTypes, GrantTypes, RotationTypes, TokenEndpointAuthMethod } from "../utils/Types"
+import { Types } from "../utils"
 import { envConfig } from "./env.config"
 
 const common: ClientConfig = {
@@ -10,7 +10,7 @@ const common: ClientConfig = {
   ssoDisabled: false,
   crossOriginAuth: false,
   jwtConfiguration: {
-    alg: AlgTypes.RS256,
+    alg: Types.AlgTypes.RS256,
     lifetimeInSeconds: 36000,
     secretEncoded: false
   },
@@ -22,79 +22,79 @@ const common: ClientConfig = {
 const native: ClientConfig = {
   ...common,
   refreshToken: {
-    expirationType: ExpirationTypes["non-expiring"],
+    expirationType: Types.ExpirationTypes["non-expiring"],
     leeway: 0,
     infiniteTokenLifetime: true,
     infiniteIdleTokenLifetime: true,
     tokenLifetime: 2592000,
     idleTokenLifetime: 1296000,
-    rotationType: RotationTypes["non-rotating"],
+    rotationType: Types.RotationTypes["non-rotating"],
   },
-  tokenEndpointAuthMethod: TokenEndpointAuthMethod.none,
-  appType: AppTypes.native,
+  tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.none,
+  appType: Types.AppTypes.native,
   grantTypes: [
-    GrantTypes.authorization_code,
-    GrantTypes.implicit,
-    GrantTypes.refresh_token
+    Types.GrantTypes.authorization_code,
+    Types.GrantTypes.implicit,
+    Types.GrantTypes.refresh_token
   ],
 }
 
 const m2m: ClientConfig = {
   ...common,
   refreshToken: {
-    expirationType: ExpirationTypes["non-expiring"],
+    expirationType: Types.ExpirationTypes["non-expiring"],
     leeway: 0,
     infiniteTokenLifetime: true,
     infiniteIdleTokenLifetime: true,
     tokenLifetime: 31557600,
     idleTokenLifetime: 2592000,
-    rotationType: RotationTypes["non-rotating"],
+    rotationType: Types.RotationTypes["non-rotating"],
   },
-  tokenEndpointAuthMethod: TokenEndpointAuthMethod.client_secret_post,
-  appType: AppTypes.non_interactive,
+  tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.client_secret_post,
+  appType: Types.AppTypes.non_interactive,
   grantTypes: [
-    GrantTypes.client_credentials
+    Types.GrantTypes.client_credentials
   ],
 }
 
 const rwa: ClientConfig = {
   ...common,
   refreshToken: {
-    expirationType: ExpirationTypes["non-expiring"],
+    expirationType: Types.ExpirationTypes["non-expiring"],
     leeway: 0,
     infiniteTokenLifetime: true,
     infiniteIdleTokenLifetime: true,
     tokenLifetime: 31557600,
     idleTokenLifetime: 2592000,
-    rotationType: RotationTypes["non-rotating"],
+    rotationType: Types.RotationTypes["non-rotating"],
   },
-  tokenEndpointAuthMethod: TokenEndpointAuthMethod.client_secret_post,
-  appType: AppTypes.regular_web,
+  tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.client_secret_post,
+  appType: Types.AppTypes.regular_web,
   grantTypes: [
-    GrantTypes.authorization_code,
-    GrantTypes.implicit,
-    GrantTypes.refresh_token,
-    GrantTypes.client_credentials
+    Types.GrantTypes.authorization_code,
+    Types.GrantTypes.implicit,
+    Types.GrantTypes.refresh_token,
+    Types.GrantTypes.client_credentials
   ],
 }
 
 const spa: ClientConfig = {
   ...common,
   refreshToken: {
-    expirationType: ExpirationTypes.expiring,
+    expirationType: Types.ExpirationTypes.expiring,
     leeway: 0,
     tokenLifetime: 2592000,
     idleTokenLifetime: 1296000,
     infiniteTokenLifetime: false,
     infiniteIdleTokenLifetime: false,
-    rotationType: RotationTypes.rotating,
+    rotationType: Types.RotationTypes.rotating,
   },
-  tokenEndpointAuthMethod: TokenEndpointAuthMethod.none,
-  appType: AppTypes.spa,
+  tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.none,
+  appType: Types.AppTypes.spa,
   grantTypes: [
-    GrantTypes.authorization_code,
-    GrantTypes.implicit,
-    GrantTypes.refresh_token
+    Types.GrantTypes.authorization_code,
+    Types.GrantTypes.implicit,
+    Types.GrantTypes.refresh_token
   ],
 }
 

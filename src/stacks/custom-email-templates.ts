@@ -2,8 +2,7 @@ import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, EmailTemplate } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { EmailTemplates } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -25,7 +24,7 @@ class Stack extends TerraformStack {
 
     // Welcome email
     new EmailTemplate(this, Utils.id(name, "emailtemplate"), {
-      template: EmailTemplates.welcome_email,
+      template: Types.EmailTemplates.welcome_email,
       enabled: true,
       from: "admin@test.com",
       subject: "[Modified] Welcome!",

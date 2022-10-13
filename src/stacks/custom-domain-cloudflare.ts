@@ -3,8 +3,7 @@ import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, CustomDomain, CustomDomainVerification, CustomDomainVerificationA } from "../../.gen/providers/auth0"
 import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
-import { CustomDomainTypes } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -33,7 +32,7 @@ class Stack extends TerraformStack {
     this.customDomain = new CustomDomain(this, Utils.id(name, "customDomain"), {
       provider: this.auth0Provider,
       domain: config.env.CUSTOM_DOMAIN,
-      type: CustomDomainTypes.auth0_managed_certs,
+      type: Types.CustomDomainTypes.auth0_managed_certs,
     })
 
     // Create a DNS entry at CloudFlare

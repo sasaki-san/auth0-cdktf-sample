@@ -7,8 +7,7 @@ import { CloudwatchEventTarget } from "@cdktf/provider-aws/lib/cloudwatch-event-
 import { CloudwatchLogGroup } from "@cdktf/provider-aws/lib/cloudwatch-log-group"
 import { Auth0Provider, LogStream } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { LogStreamStatus, LogStreamTypes } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -34,8 +33,8 @@ class Stack extends TerraformStack {
     this.logStream = new LogStream(this, Utils.id(name, "logstream"), {
       provider: this.auth0Provider,
       name: name,
-      type: LogStreamTypes.eventbridge,
-      status: LogStreamStatus.active,
+      type: Types.LogStreamTypes.eventbridge,
+      status: Types.LogStreamStatus.active,
       sink: {
         awsAccountId: config.env.LOG_STREAM_AWS_ACCOUNT_ID,
         awsRegion: config.env.AWS_REGION

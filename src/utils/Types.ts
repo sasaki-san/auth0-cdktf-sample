@@ -1,20 +1,20 @@
-export enum AppTypes {
+enum AppTypes {
   "spa" = "spa",
   "regular_web" = "regular_web",
   "non_interactive" = "non_interactive",
   "native" = "native"
 }
 
-export enum TokenEndpointAuthMethod {
+enum TokenEndpointAuthMethod {
   "client_secret_post" = "client_secret_post",
   "none" = "none"
 }
 
-export enum AlgTypes {
+enum AlgTypes {
   "RS256" = "RS256"
 }
 
-export enum GrantTypes {
+enum GrantTypes {
   "authorization_code" = "authorization_code",
   "implicit" = "implicit",
   "refresh_token" = "refresh_token",
@@ -27,7 +27,7 @@ export enum GrantTypes {
   "passwordless_otp" = "http://auth0.com/oauth/grant-type/passwordless/otp"
 }
 
-export const mfaGrantTypes = () => {
+const mfaGrantTypes = () => {
   return [
     GrantTypes.mfa_oob,
     GrantTypes.mfa_otp,
@@ -35,59 +35,59 @@ export const mfaGrantTypes = () => {
   ]
 }
 
-export const passwordGrantTypes = () => {
+const passwordGrantTypes = () => {
   return [
     GrantTypes.password,
     GrantTypes.passwordRealm,
   ]
 }
 
-export enum RotationTypes {
+enum RotationTypes {
   "non-rotating" = "non-rotating",
   rotating = "rotating"
 }
 
-export enum ExpirationTypes {
+enum ExpirationTypes {
   "non-expiring" = "non-expiring",
   expiring = "expiring"
 }
 
-export enum NodeRuntime {
+enum NodeRuntime {
   node12 = "node12",
   node16 = "node16"
 }
 
-export enum Strategies {
+enum Strategies {
   auth0 = "auth0",
   email = "email",
   samlp = "samlp"
 }
 
-export enum DigestAlg {
+enum DigestAlg {
   "sha256" = "sha256"
 }
 
-export enum ProtocolBindings {
+enum ProtocolBindings {
   "POST" = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 
 }
 
-export enum SignatureAlg {
+enum SignatureAlg {
   "RSASHA256" = "rsa-sha256"
 }
 
-export enum Policies {
+enum Policies {
   "Never" = "never",
   "AdaptiveMFA" = "confidence-score",
   "Always" = "all-applications"
 }
 
-export enum CustomDomainTypes {
+enum CustomDomainTypes {
   auth0_managed_certs = "auth0_managed_certs",
   self_managed_certs = "self_managed_certs"
 }
 
-export enum PromptGroups {
+enum PromptGroups {
   "login" = "login",
   "login-id" = "login-id",
   "login-password" = "login-password",
@@ -115,7 +115,7 @@ export enum PromptGroups {
   "common" = "common"
 }
 
-export enum PromptLangs {
+enum PromptLangs {
   "ar" = "ar",
   "bg" = "bg",
   "bs" = "bs",
@@ -161,17 +161,17 @@ export enum PromptLangs {
   "zh-TW" = "zh-TW"
 }
 
-export enum LogStreamTypes {
+enum LogStreamTypes {
   eventbridge = "eventbridge"
 }
 
-export enum LogStreamStatus {
+enum LogStreamStatus {
   active = "active",
   paused = "paused",
   suspended = "suspended"
 }
 
-export enum EmailTemplates {
+enum EmailTemplates {
   verify_email = "verify_email",
   verify_email_by_code = "verify_email_by_code",
   reset_email = "reset_email",
@@ -185,13 +185,40 @@ export enum EmailTemplates {
   password_reset = "password_reset"
 }
 
-export enum GuardianPhoneProviderTypes {
+enum GuardianPhoneProviderTypes {
   auth0 = "auth0",
   twilio = "twilio",
   phone_message_hook = "phone-message-hook"
 }
 
-export enum GuardianPhoneMessageTypes {
+enum GuardianPhoneMessageTypes {
   sms = "sms",
   voice = "voice"
 }
+
+const Types = {
+  AppTypes,
+  TokenEndpointAuthMethod,
+  AlgTypes,
+  GrantTypes,
+  mfaGrantTypes,
+  passwordGrantTypes,
+  RotationTypes,
+  ExpirationTypes,
+  NodeRuntime,
+  Strategies,
+  DigestAlg,
+  ProtocolBindings,
+  SignatureAlg,
+  Policies,
+  CustomDomainTypes,
+  PromptGroups,
+  PromptLangs,
+  LogStreamTypes,
+  LogStreamStatus,
+  EmailTemplates,
+  GuardianPhoneProviderTypes,
+  GuardianPhoneMessageTypes,
+}
+
+export default Types

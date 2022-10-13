@@ -2,8 +2,7 @@ import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, GlobalClient, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { GrantTypes, mfaGrantTypes } from "../utils/Types";
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -31,9 +30,9 @@ class Stack extends TerraformStack {
       ...config.base.client.rwa,
       name: Utils.id(name, "client"),
       grantTypes: [
-        GrantTypes.implicit,
-        ...mfaGrantTypes(),
-        GrantTypes.passwordless_otp
+        Types.GrantTypes.implicit,
+        ...Types.mfaGrantTypes(),
+        ...Types.passwordGrantTypes(),
       ]
     })
 
