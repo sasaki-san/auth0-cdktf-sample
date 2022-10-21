@@ -3,7 +3,7 @@ import { Types } from "../utils"
 import { envConfig } from "./env.config"
 
 const common: ClientConfig = {
-  name: "CDKTF Application",
+  name: "TBD",
   isFirstParty: true,
   logoUri: "https://raw.githubusercontent.com/sasaki-san/auth0-cdktf-sample/main/src/assets/images/terraform-logo.png",
   oidcConformant: true,
@@ -100,7 +100,7 @@ const spa: ClientConfig = {
 
 const samlIdp: ClientConfig = {
   ...rwa,
-  name: "CDKTF SAML IDP Application",
+  name: "TBD",
   callbacks: ["TBD"],
   addons: {
     samlp: {},

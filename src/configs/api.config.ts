@@ -2,8 +2,8 @@ import { ResourceServerConfig } from "../../.gen/providers/auth0";
 import { Types } from "../utils";
 
 const _default: ResourceServerConfig = {
-  name: "CDKTF-API",
-  identifier: "https://cdktf-api",
+  name: "TBD",
+  identifier: "https://TBD",
   allowOfflineAccess: false,
   skipConsentForVerifiableFirstPartyClients: true,
   tokenLifetime: 86400,

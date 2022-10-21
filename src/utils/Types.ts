@@ -60,7 +60,9 @@ enum NodeRuntime {
 enum Strategies {
   auth0 = "auth0",
   email = "email",
-  samlp = "samlp"
+  samlp = "samlp",
+  sms = "sms",
+  waad = "waad"
 }
 
 enum DigestAlg {
@@ -205,6 +207,16 @@ const ActionCurrentTriggers = {
   send_phone_message: ({ id: "send-phone-message", version: "v2" })
 }
 
+enum TenantCookieSessionModes {
+  persistent = "persistent", 
+  non_persistent = "non_persistent"
+}
+
+enum TemplateSyntax {
+  liquid = "liquid",
+  md_with_macros = "md_with_macros"
+}
+
 const Types = {
   AppTypes,
   TokenEndpointAuthMethod,
@@ -228,7 +240,9 @@ const Types = {
   EmailTemplates,
   GuardianPhoneProviderTypes,
   GuardianPhoneMessageTypes,
-  ActionCurrentTriggers
+  ActionCurrentTriggers,
+  TenantCookieSessionModes,
+  TemplateSyntax
 }
 
 export default Types

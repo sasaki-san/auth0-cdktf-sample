@@ -17,7 +17,7 @@ class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "PASSWORDLESS_SMS_SEND_FROM_NUMBER", "PASSWORDLESS_SMS_USER_PHONE_NUMBER", "TWILIO_SID", "TWILIO_TOKEN"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
@@ -50,17 +50,23 @@ class Stack extends TerraformStack {
       scope: ["transfer:funds"]
     })
 
-    // Create a Passwordless - Email Connection
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.email,
+    // Create a Passwordless - SMS Connection
+    this.connection = new Connection(this, Utils.id(name, "connection-sms"), {
+      ...config.base.connection.sms,
+      options: {
+        ...config.base.connection.sms.options,
+        from: config.env.PASSWORDLESS_SMS_SEND_FROM_NUMBER,
+        twilioSid: config.env.TWILIO_SID,
+        twilioToken: config.env.TWILIO_TOKEN
+      },
       enabledClients: [this.client.clientId, config.env.CLIENT_ID]
     })
 
     // Create a User in the connection
     this.user = new User(this, Utils.id(name, "user"), {
-      ...config.base.user.passwordless.buzz,
+      ...config.base.user.passwordless.bo,
       connectionName: this.connection.name,
-      picture: Utils.roboHash(name)
+      phoneNumber: config.env.PASSWORDLESS_SMS_USER_PHONE_NUMBER
     })
 
     // Enable passwordless login
@@ -73,5 +79,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "passwordless-email");
+  new Stack(app, "passwordless-sms");
 }

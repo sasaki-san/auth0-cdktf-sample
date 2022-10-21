@@ -10,10 +10,14 @@ tsconfig.tsbuildinfo
 !jest.config.js
 !setup.js
 
-.DS_Store
 .env
 .import
+
+# Do not ignore any files under assets
 !src/assets/**/*
 
-# ignore any stack files that start with "my-*"
+# Ignore any files that start with "my-*"
 src/**/my-*
+
+# Ignore mac stuff
+.DS_Store

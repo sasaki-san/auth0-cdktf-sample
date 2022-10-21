@@ -39,7 +39,7 @@ class Stack extends TerraformStack {
     new TriggerBinding(this, Utils.id(name, `triggerbinding-postlogin`), {
       dependsOn: [this.postLoginAction],
       trigger: Types.ActionCurrentTriggers.post_login.id,
-      actions: [{ id: this.postLoginAction.id, displayName: this.postLoginAction.id }]
+      actions: [{ id: this.postLoginAction.id, displayName: this.postLoginAction.name }]
     })
 
     // // Pre user registration action
@@ -59,7 +59,7 @@ class Stack extends TerraformStack {
     new TriggerBinding(this, Utils.id(name, `triggerbinding-preuserreg`), {
       dependsOn: [this.preUserRegistrationAction],
       trigger: Types.ActionCurrentTriggers.pre_user_registration.id,
-      actions: [{ id: this.preUserRegistrationAction.id, displayName: this.preUserRegistrationAction.id }]
+      actions: [{ id: this.preUserRegistrationAction.id, displayName: this.preUserRegistrationAction.name }]
     })
 
     // Post change password action
@@ -84,7 +84,7 @@ class Stack extends TerraformStack {
     new TriggerBinding(this, Utils.id(name, `triggerbinding-postchpw`), {
       dependsOn: [this.postChangePasswordAction],
       trigger: Types.ActionCurrentTriggers.post_change_password.id,
-      actions: [{ id: this.postChangePasswordAction.id, displayName: this.postChangePasswordAction.id }]
+      actions: [{ id: this.postChangePasswordAction.id, displayName: this.postChangePasswordAction.name }]
     })
 
   }

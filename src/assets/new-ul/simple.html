@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <!--
-  {% for e in prompt.screen.texts %}   
-    {{ e[0] }}: {{ e[1] }} 
-  {% endfor %}  
-  -->
 <head>
   {%- auth0:head -%}
 </head>
-
-<body>
-  {% for e in prompt.screen.texts %}   
-    {{ e[0] }}: {{ e[1] }} 
-  {% endfor %}  
-  {{ prompt.screen.texts }}
+<body class="_widget-auto-layout">
+  <pre>
+  </pre>
   {%- auth0:widget -%}
+  <script>
+    window.onload = () => {
+      console.log(`
+Screen: {{ prompt.screen.name }}
+{% for e in prompt.screen.texts %}   
+{{ e[0] }}: {{ e[1] }} 
+{% endfor %}  
+`)
+    }
+  </script>
 </body>
 
 </html>

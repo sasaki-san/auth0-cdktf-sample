@@ -2,7 +2,7 @@ import { ConnectionConfig } from "../../.gen/providers/auth0"
 import { Types, Utils } from "../utils"
 
 const auth0: ConnectionConfig = {
-  name: "CDKTF-Auth0-Base-Connection",
+  name: "TBD",
   strategy: Types.Strategies.auth0,
   isDomainConnection: false,
   options: {
@@ -19,7 +19,6 @@ const auth0: ConnectionConfig = {
     disableSignup: false,
     passwordPolicy: "good",
     requiresUsername: false,
-    bruteForceProtection: true
   }
 }
 
@@ -43,8 +42,30 @@ const email: ConnectionConfig = {
   }
 }
 
+const sms: ConnectionConfig = {
+  name: "sms",
+  strategy: Types.Strategies.sms,
+  isDomainConnection: false,
+  options: {
+    requiresUsername: false,
+    name: "sms",
+    subject: "Welcome to {{ application.name }}",
+    syntax: Types.TemplateSyntax.md_with_macros,
+    template: Utils.readAsset("passwordless", "phone.md"),
+    disableSignup: false,
+    bruteForceProtection: true,
+    totp: {
+      timeStep: 180,
+      length: 6
+    },
+    from: "TBD_FROM_PHONE",
+    twilioSid: "TBD_TWILIO_SID",
+    twilioToken: "TBD_TWILIO_TOKEN",
+  }
+}
+
 const saml: ConnectionConfig = {
-  name: "CDKTF-Saml-Base-Connection",
+  name: "TBD",
   strategy: Types.Strategies.samlp,
   isDomainConnection: false,
   showAsButton: true,
@@ -56,14 +77,41 @@ const saml: ConnectionConfig = {
   }
 }
 
+const azuread: ConnectionConfig = {
+  name: "TBD",
+  strategy: Types.Strategies.waad,
+  isDomainConnection: false,
+  showAsButton: true,
+  displayName: "Azure AD",
+  options: {
+    domain: "TBD",
+    clientId: "TBD",
+    useWsfed: false,
+    identityApi: "microsoft-identity-platform-v2.0",
+    clientSecret: "TBD",
+    tenantDomain: "TBD",
+    waadProtocol: "openid-connect",
+    apiEnableUsers: false,
+    digestAlgorithm: Types.DigestAlg.sha256,
+    protocolBinding: Types.ProtocolBindings.POST,
+    signSamlRequest: true,
+    signatureAlgorithm: Types.SignatureAlg.RSASHA256,
+  }
+}
+
+
 export interface IConnectionConfig {
   auth0: ConnectionConfig
   email: ConnectionConfig
+  sms: ConnectionConfig
   saml: ConnectionConfig
+  azuread: ConnectionConfig
 }
 
 export const connectionConfig: IConnectionConfig = {
   auth0,
   email,
-  saml
+  sms,
+  saml,
+  azuread
 }
