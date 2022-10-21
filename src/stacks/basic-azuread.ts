@@ -36,6 +36,7 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
+    // Note: ext_groups, ext_profile, ext_nested_groups are currently not supported
     this.connection = new Connection(this, Utils.id(name, "connection"), {
       ...config.base.connection.azuread,
       name: Utils.id(name, "connection"),

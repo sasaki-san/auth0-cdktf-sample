@@ -1,4 +1,3 @@
-import * as fs from "fs"
 import * as path from "path"
 
 export type AssetType =
@@ -13,9 +12,8 @@ export type AssetType =
 
 const id = (appName: string, resourceName: string) => `${appName}-${resourceName}`
 
-const readAsset = (type: AssetType, name: string): string => {
-  const text = fs.readFileSync(path.resolve(__dirname, "..", "assets", type, name), 'utf-8')
-  return text.replace(/\$/g, "\$$$")
+const assetPath = (type: AssetType, name: string): string => {
+  return path.resolve(__dirname, "..", "assets", type, name)
 }
 
 const roboHash = (text: string) => `https://robohash.org/${text}.png`
@@ -24,7 +22,7 @@ const auth0AuthApiDebuggerUrl = (domain: string) => `https://${domain.replace("a
 
 const Utils = {
   id,
-  readAsset,
+  assetPath,
   roboHash,
   auth0AuthApiDebuggerUrl,
 }

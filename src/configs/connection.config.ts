@@ -1,3 +1,4 @@
+import { Fn } from "cdktf"
 import { ConnectionConfig } from "../../.gen/providers/auth0"
 import { Types, Utils } from "../utils"
 
@@ -32,7 +33,7 @@ const email: ConnectionConfig = {
     from: `{{ application.name }} \u003cadmin@myapp.com\u003e`,
     subject: "Welcome to {{ application.name }}",
     syntax: "liquid",
-    template: Utils.readAsset("passwordless", "email.html"),
+    template: Fn.file(Utils.assetPath("passwordless", "email.html")),
     disableSignup: false,
     bruteForceProtection: true,
     totp: {
@@ -51,7 +52,7 @@ const sms: ConnectionConfig = {
     name: "sms",
     subject: "Welcome to {{ application.name }}",
     syntax: Types.TemplateSyntax.md_with_macros,
-    template: Utils.readAsset("passwordless", "phone.md"),
+    template: Fn.file(Utils.assetPath("passwordless", "phone.md")),
     disableSignup: false,
     bruteForceProtection: true,
     totp: {
@@ -74,6 +75,14 @@ const saml: ConnectionConfig = {
     protocolBinding: Types.ProtocolBindings.POST,
     signSamlRequest: true,
     signatureAlgorithm: Types.SignatureAlg.RSASHA256,
+  }
+}
+
+const google: ConnectionConfig = {
+  name: "TBD",
+  strategy: Types.Strategies.google,
+  isDomainConnection: false,
+  options: {
   }
 }
 
@@ -105,6 +114,7 @@ export interface IConnectionConfig {
   email: ConnectionConfig
   sms: ConnectionConfig
   saml: ConnectionConfig
+  google: ConnectionConfig
   azuread: ConnectionConfig
 }
 
@@ -113,5 +123,6 @@ export const connectionConfig: IConnectionConfig = {
   email,
   sms,
   saml,
+  google,
   azuread
 }

@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Action, Auth0Provider, TriggerBinding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
@@ -26,9 +26,9 @@ class Stack extends TerraformStack {
 
     this.postLoginAction = new Action(this, Utils.id(name, `action-postlogin`), {
       name: Utils.id(name, `action-postlogin`),
-      runtime: Types.NodeRuntime.node16,
+      // runtime: Types.NodeRuntime.node16,
       deploy: true,
-      code: Utils.readAsset("actions", "console-log.js"),
+      code: Fn.file(Utils.assetPath("actions", "console-log.js")),
       supportedTriggers: Types.ActionCurrentTriggers.post_login,
       dependencies: [
         { name: "lodash", version: "latest" },
@@ -43,12 +43,11 @@ class Stack extends TerraformStack {
     })
 
     // // Pre user registration action
-
     this.preUserRegistrationAction = new Action(this, Utils.id(name, `action-preuserreg`), {
       name: Utils.id(name, `action-preuserreg`),
-      runtime: Types.NodeRuntime.node16,
+      // runtime: Types.NodeRuntime.node16,
       deploy: true,
-      code: Utils.readAsset("actions", "console-log.js"),
+      code: Fn.file(Utils.assetPath("actions", "console-log.js")),
       supportedTriggers: Types.ActionCurrentTriggers.pre_user_registration,
       dependencies: [
         { name: "lodash", version: "latest" },
@@ -66,9 +65,9 @@ class Stack extends TerraformStack {
 
     this.postChangePasswordAction = new Action(this, Utils.id(name, `action-postchpw`), {
       name: Utils.id(name, `action-postchpw`),
-      runtime: Types.NodeRuntime.node16,
+      // runtime: Types.NodeRuntime.node16,
       deploy: true,
-      code: Utils.readAsset("actions", "post-change-pw-send-email.js"),
+      code: Fn.file(Utils.assetPath("actions", "post-change-pw-send-email.js")),
       supportedTriggers: Types.ActionCurrentTriggers.post_change_password,
       dependencies: [
         { name: "nodemailer", version: "latest" }

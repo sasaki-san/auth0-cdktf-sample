@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, Rule, RuleConfigA, RuleConfigAConfig } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
@@ -25,12 +25,11 @@ class Stack extends TerraformStack {
     ]
 
     // Create Rules
-    enabledRules.forEach((rule, index) => {
+    enabledRules.forEach((rule) => {
       new Rule(this, Utils.id(name, `rule-${rule.name}`), {
         name: rule.name,
-        script: Utils.readAsset("rules", rule.src),
+        script: Fn.file(Utils.assetPath("rules", rule.src)),
         enabled: true,
-        order: index + 1
       })
     })
 

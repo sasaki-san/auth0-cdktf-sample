@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, Branding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
@@ -25,7 +25,7 @@ class Stack extends TerraformStack {
         pageBackground: "#FFFFFF"
       },
       universalLogin: {
-        body: Utils.readAsset("new-ul", "simple.html")
+        body: Fn.file(Utils.assetPath("new-ul", "simple.html"))
       }
     })
 

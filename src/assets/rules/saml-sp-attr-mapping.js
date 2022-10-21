@@ -1,7 +1,6 @@
 function mapSamlSpAttributes(user, context, callback) {
 
   user.user_metadata = user.user_metadata || {};
-
   user.user_metadata.favorite_color = user.saml_profile_data_color;
 
   // persist the user_metadata update
@@ -12,6 +11,4 @@ function mapSamlSpAttributes(user, context, callback) {
     .catch(function (err) {
       callback(err);
     });
-
-  callback(null, user, context);
 }

@@ -62,7 +62,7 @@ class Stack extends TerraformStack {
     this.idpRule = new Rule(this, Utils.id(name, `rule-idp`), {
       provider: this.idpAuth0Provider,
       name: `${name}-saml-idp-attr-mapping`,
-      script: Utils.readAsset("rules", "saml-idp-attr-mapping.js"),
+      script: Fn.file(Utils.assetPath("rules", "saml-idp-attr-mapping.js")),
       enabled: true,
     })
 
@@ -108,7 +108,7 @@ class Stack extends TerraformStack {
     this.spRule = new Rule(this, Utils.id(name, `rule-sp`), {
       provider: this.spAuth0Provider,
       name: `${name}-saml-sp-attr-mapping`,
-      script: Utils.readAsset("rules", "saml-sp-attr-mapping.js"),
+      script: Fn.file(Utils.assetPath("rules", "saml-sp-attr-mapping.js")),
       enabled: true,
     })
 

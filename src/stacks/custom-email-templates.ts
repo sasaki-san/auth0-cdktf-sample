@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, EmailTemplate } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
@@ -19,9 +19,6 @@ class Stack extends TerraformStack {
       clientSecret: config.env.CLIENT_SECRET
     })
 
-    let htmlBody = Utils.readAsset("email", "welcome_email.html")
-    htmlBody = htmlBody.replace("Welcome to ", "[Modified] Welcome to ")
-
     // Welcome email
     new EmailTemplate(this, Utils.id(name, "emailtemplate"), {
       template: Types.EmailTemplates.welcome_email,
@@ -29,7 +26,7 @@ class Stack extends TerraformStack {
       from: "admin@test.com",
       subject: "[Modified] Welcome!",
       syntax: "liquid",
-      body: htmlBody,
+      body: Fn.file(Utils.assetPath("email", "welcome_email.html"))
     })
 
   }

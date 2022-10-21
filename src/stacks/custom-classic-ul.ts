@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, GlobalClient, Tenant } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
@@ -24,7 +24,7 @@ class Stack extends TerraformStack {
     // Update login page template
     this.globalClient = new GlobalClient(this, Utils.id(name, "globalclient"), {
       customLoginPageOn: true,
-      customLoginPage: Utils.readAsset("classic-ul", "login.passwordless.html")
+      customLoginPage: Fn.file(Utils.assetPath("classic-ul", "login.passwordless.html"))
     })
 
     // Update both password-reset and multifactor templates
@@ -36,11 +36,11 @@ class Stack extends TerraformStack {
       sessionLifetime: 168, // this is in hours = 10800 minutes
       changePassword: {
         enabled: true,
-        html: Utils.readAsset("classic-ul", "password-reset.default.html")
+        html: Fn.file(Utils.assetPath("classic-ul", "password-reset.default.html"))
       },
       guardianMfaPage: {
         enabled: true,
-        html: Utils.readAsset("classic-ul", "multifactor.default.html")
+        html: Fn.file(Utils.assetPath("classic-ul", "multifactor.default.html"))
       }
     })
 

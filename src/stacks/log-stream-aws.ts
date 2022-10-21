@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { CloudwatchEventBus } from "@cdktf/provider-aws/lib/cloudwatch-event-bus"
 import { CloudwatchEventRule } from "@cdktf/provider-aws/lib/cloudwatch-event-rule"
@@ -60,7 +60,7 @@ class Stack extends TerraformStack {
       name: Utils.id(name, "aws-event-rule"),
       description: "Auth0 Log Streaming",
       eventBusName: this.awsEventBus.name,
-      eventPattern: Utils.readAsset("aws", "eventbridge-rule.json")
+      eventPattern: Fn.file(Utils.assetPath("aws", "eventbridge-rule.json"))
     })
 
     this.awsCloudwatchLogGroup = new CloudwatchLogGroup(this, Utils.id(name, "aws-cloudwatch-loggroup"), {

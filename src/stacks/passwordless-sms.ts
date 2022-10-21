@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformStack } from "cdktf";
+import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, GlobalClient, ClientGrant, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
@@ -72,7 +72,7 @@ class Stack extends TerraformStack {
     // Enable passwordless login
     this.globalClient = new GlobalClient(this, Utils.id(name, "globalclient"), {
       customLoginPageOn: true,
-      customLoginPage: Utils.readAsset("classic-ul", "login.passwordless.html")
+      customLoginPage: Fn.file(Utils.assetPath("classic-ul", "login.passwordless.html"))
     })
 
   }
