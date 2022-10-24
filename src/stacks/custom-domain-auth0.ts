@@ -1,6 +1,6 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, CustomDomain, CustomDomainVerification, CustomDomainVerificationA } from "../../.gen/providers/auth0"
+import { Auth0Provider, CustomDomain, CustomDomainVerificationA } from "../../.gen/providers/auth0"
 import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
@@ -11,7 +11,7 @@ class Stack extends TerraformStack {
   readonly customDomain: CustomDomain
   readonly cloudFlareProvider: CloudflareProvider
   readonly cloudFlareRecord: Record
-  readonly customDomainVerification: CustomDomainVerification
+  readonly customDomainVerification: CustomDomainVerificationA
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
@@ -59,5 +59,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "custom-domain-cloudflare");
+  new Stack(app, "custom-domain-auth0");
 }
