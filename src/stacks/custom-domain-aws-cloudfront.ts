@@ -134,5 +134,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "custom-domain-aws");
+  new Stack(app, "custom-domain-aws-cloudfront");
 }

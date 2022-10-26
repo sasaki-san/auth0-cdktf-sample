@@ -28,7 +28,7 @@ class Stack extends TerraformStack {
     this.client = new Client(this, Utils.id(name, "client"), {
       ...config.base.client.native,
       name: Utils.id(name, "client"),
-      logoUri: `https://openmoji.org/data/color/svg/F8FF.svg`,
+      logoUri: Utils.logUris.apple, 
       callbacks: config.env.MOBILE_IOS_CALLBACK,
       allowedLogoutUrls: config.env.MOBILE_IOS_LOGOUT
     })

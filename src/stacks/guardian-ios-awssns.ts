@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { App, TerraformOutput, TerraformStack } from "cdktf";
+import { App, Fn, TerraformOutput, TerraformStack } from "cdktf";
 import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { SnsPlatformApplication } from "@cdktf/provider-aws/lib/sns-platform-application"
@@ -14,18 +14,17 @@ class Stack extends TerraformStack {
   readonly awsProvider: AwsProvider
   readonly client: Client
   readonly resourceServer: ResourceServer
-  readonly clientGrants: ClientGrant
   readonly connection: Connection
   readonly user: User
-  readonly awsSnsTopic?: SnsTopic
-  readonly awsSnsTopicSubscription?: SnsTopicSubscription
+  readonly awsSnsTopic: SnsTopic
+  readonly awsSnsTopicSubscription: SnsTopicSubscription
   readonly awsSnsPlatformApp: SnsPlatformApplication
   readonly guardian: Guardian
 
   constructor(scope: Construct, name: string) {
     super(scope, name)
 
-    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "MOBILE_ANDROID_CALLBACK", "GUARDIAN_SNS_EVENT_DELIVERY_EMAIL", "GUARDIAN_SNS_GCM_SERVER_KEY"])
+    Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET", "AWS_ACCESS_KEY_ID", "AWS_ACCESS_SECRET_KEY", "AWS_REGION", "MOBILE_IOS_CALLBACK", "GUARDIAN_SNS_EVENT_DELIVERY_EMAIL", "GUARDIAN_SNS_APNS_SIGNING_KEY_FILE_NAME", "GUARDIAN_SNS_APNS_SIGNING_KEY_ID", "GUARDIAN_SNS_APNS_BUNDLE_ID", "GUARDIAN_SNS_APNS_TEAM_ID"])
 
     this.auth0Provider = new Auth0Provider(this, Utils.id(name, "auth0provider"), {
       domain: config.env.DOMAIN,
@@ -43,8 +42,8 @@ class Stack extends TerraformStack {
     this.client = new Client(this, Utils.id(name, "client"), {
       ...config.base.client.native,
       name: Utils.id(name, "client"),
-      logoUri: `https://openmoji.org/data/color/svg/E047.svg`,
-      callbacks: config.base.client.native.callbacks?.concat(config.env.MOBILE_ANDROID_CALLBACK)
+      logoUri: Utils.logUris.apple,
+      callbacks: config.env.MOBILE_IOS_CALLBACK
     })
 
     // Create an Auth0 API 
@@ -56,7 +55,7 @@ class Stack extends TerraformStack {
     })
 
     // Grant API permissions to the Applicaiton
-    this.clientGrants = new ClientGrant(this, Utils.id(name, "client-grants"), {
+    new ClientGrant(this, Utils.id(name, "client-grants"), {
       clientId: this.client.clientId,
       audience: this.resourceServer.identifier,
       scope: ["transfer:funds"]
@@ -97,22 +96,26 @@ class Stack extends TerraformStack {
       provider: this.awsProvider,
       dependsOn: [this.awsSnsTopic],
       name: Utils.id(name, "platformapp"),
-      platform: "GCM",
-      platformCredential: config.env.GUARDIAN_SNS_GCM_SERVER_KEY,
+      // Change this to APNS for Prod.
+      platform: "APNS_SANDBOX", 
+      // https://docs.aws.amazon.com/sns/latest/api/API_CreatePlatformApplication.html
+      // For APNS and APNS_SANDBOX using token credentials, 
+      // - PlatformPrincipal is signing key ID and 
+      // - PlatformCredential is signing key.
+      platformCredential: Fn.file(Utils.assetPath("apns", config.env.GUARDIAN_SNS_APNS_SIGNING_KEY_FILE_NAME)),
+      platformPrincipal: config.env.GUARDIAN_SNS_APNS_SIGNING_KEY_ID,
+      applePlatformBundleId: config.env.GUARDIAN_SNS_APNS_BUNDLE_ID,
+      applePlatformTeamId: config.env.GUARDIAN_SNS_APNS_TEAM_ID,
       eventDeliveryFailureTopicArn: this.awsSnsTopic.arn,
       eventEndpointCreatedTopicArn: this.awsSnsTopic.arn,
       eventEndpointDeletedTopicArn: this.awsSnsTopic.arn,
       eventEndpointUpdatedTopicArn: this.awsSnsTopic.arn
     })
 
-    // Terraform doesn't work with Amazon SNS part.
+    // Setup MFA with APNS. - Note that Auth0 terraform currently does not support this
     this.guardian = new Guardian(this, Utils.id(name, "guardian"), {
       provider: this.auth0Provider,
       policy: Types.Policies.Always,
-      phone: {
-        provider: Types.GuardianPhoneProviderTypes.auth0,
-        messageTypes: [Types.GuardianPhoneMessageTypes.sms]
-      },
       push: {
         customApp: {
           appName: name,
@@ -121,8 +124,8 @@ class Stack extends TerraformStack {
           awsAccessKeyId: config.env.AWS_ACCESS_KEY_ID,
           awsSecretAccessKey: config.env.AWS_ACCESS_SECRET_KEY,
           awsRegion: config.env.AWS_REGION,
-          snsGcmPlatformApplicationArn: this.awsSnsPlatformApp.arn,
-          snsApnsPlatformApplicationArn: "",
+          snsGcmPlatformApplicationArn: "",
+          snsApnsPlatformApplicationArn: this.awsSnsPlatformApp.arn,
         }
       }
     })
@@ -135,5 +138,5 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "guardian-awssns-provider");
+  new Stack(app, "guardian-ios-awssns");
 }

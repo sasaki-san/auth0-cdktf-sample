@@ -147,8 +147,6 @@ Required `.env` parameters:
 - `GUARDIAN_AWS_ACCESS_KEY_ID`
 - `GUARDIAN_AWS_ACCESS_SECRET_KEY` 
 - `GUARDIAN_AWS_REGION` 
-- `GUARDIAN_SNS_GCM_PLATFORM_APP_ARN` (if using FCM)
-- `GUARDIAN_SNS_APNS_PLATFORM_APP_ARN` (if using APNS)
 
 ### Custom Domain with Cloudflare
 ```shell
