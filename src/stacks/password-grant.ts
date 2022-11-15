@@ -27,7 +27,7 @@ class Stack extends TerraformStack {
     this.client = new Client(this, Utils.id(name, "client"), {
       ...config.base.client.rwa,
       name: Utils.id(name, "client"),
-      grantTypes: [...Types.passwordGrantTypes()]
+      grantTypes: [...Types.passwordGrantTypes(), Types.GrantTypes.refresh_token]
     })
 
     // Create an Auth0 Connection
@@ -49,7 +49,6 @@ class Stack extends TerraformStack {
     this.user = new User(this, Utils.id(name, "user"), {
       ...config.base.user.john,
       connectionName: this.connection.name,
-      picture: Utils.roboHash(name)
     })
 
   }

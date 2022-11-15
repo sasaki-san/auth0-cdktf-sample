@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   {%- auth0:head -%}
 </head>
+
 <body class="_widget-auto-layout">
-  <pre>
-  </pre>
   {%- auth0:widget -%}
   <script>
     window.onload = () => {
-      console.log(`
-Screen: {{ prompt.screen.name }}
-{% for e in prompt.screen.texts %}   
-{{ e[0] }}: {{ e[1] }} 
-{% endfor %}  
-`)
+
+      const parseLiquidData = (jsonText) => {
+        try {
+          return JSON.parse(jsonText || `{}`)
+        } catch {
+          return jsonText
+        }
+      }
+
+      window.auth0TemplateVars = {
+        application: parseLiquidData(`{{ application | json }}`),
+        branding: parseLiquidData(`{{ branding | json }}`),
+        tenant: parseLiquidData(`{{ tenant | json }}`),
+        organization: parseLiquidData(`{{ organization | json }}`),
+        locale: `{{ locale }}`,
+        prompt: parseLiquidData(`{{ prompt | json }}`)
+      }
+
+      console.log(auth0TemplateVars)
     }
   </script>
 </body>

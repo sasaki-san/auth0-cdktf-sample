@@ -63,7 +63,8 @@ enum Strategies {
   samlp = "samlp",
   sms = "sms",
   waad = "waad",
-  google = "google-oauth2"
+  google = "google-oauth2",
+  amazon = "amazon"
 }
 
 enum DigestAlg {

@@ -2,7 +2,7 @@ import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider, GlobalClient, Tenant } from "../../.gen/providers/auth0"
 import { config } from "../configs"
-import { Utils, Validators } from "../utils";
+import { Types, Utils, Validators } from "../utils";
 
 class Stack extends TerraformStack {
 
@@ -30,7 +30,7 @@ class Stack extends TerraformStack {
     // Update both password-reset and multifactor templates
     this.tenant = new Tenant(this, Utils.id(name, "tenant"), {
       sessionCookie: {
-        mode: "persistent"
+        mode: Types.TenantCookieSessionModes.persistent
       },
       idleSessionLifetime: 72, // this is in hours 4320 minutes
       sessionLifetime: 168, // this is in hours = 10800 minutes

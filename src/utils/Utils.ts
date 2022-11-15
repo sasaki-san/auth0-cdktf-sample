@@ -9,7 +9,8 @@ export type AssetType =
   "new-ul" |
   "classic-ul" |
   "passwordless" | 
-  "apns"
+  "apns" | 
+  "errors"
 
 const id = (appName: string, resourceName: string) => `${appName}-${resourceName}`
 

@@ -86,6 +86,14 @@ const google: ConnectionConfig = {
   }
 }
 
+const amazon: ConnectionConfig = {
+  name: "TBD",
+  strategy: Types.Strategies.amazon,
+  isDomainConnection: false,
+  options: {
+  }
+}
+
 const azuread: ConnectionConfig = {
   name: "TBD",
   strategy: Types.Strategies.waad,
@@ -115,6 +123,7 @@ export interface IConnectionConfig {
   sms: ConnectionConfig
   saml: ConnectionConfig
   google: ConnectionConfig
+  amazon: ConnectionConfig
   azuread: ConnectionConfig
 }
 
@@ -124,5 +133,6 @@ export const connectionConfig: IConnectionConfig = {
   sms,
   saml,
   google,
+  amazon,
   azuread
 }
