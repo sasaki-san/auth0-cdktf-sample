@@ -11,7 +11,8 @@ enum TokenEndpointAuthMethod {
 }
 
 enum AlgTypes {
-  "RS256" = "RS256"
+  "RS256" = "RS256",
+  "HS256" = "HS256"
 }
 
 enum GrantTypes {
