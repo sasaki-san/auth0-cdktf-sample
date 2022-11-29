@@ -1,11 +1,14 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformOutput, TerraformStack } from "cdktf";
-import { Auth0Provider, CustomDomain, CustomDomainVerificationA } from "../../.gen/providers/auth0"
-import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { CloudfrontDistribution } from "@cdktf/provider-aws/lib/cloudfront-distribution";
+import { CustomDomain } from "../../.gen/providers/auth0/custom-domain";
+import { CustomDomainVerificationA } from "../../.gen/providers/auth0/custom-domain-verification";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { CloudflareProvider } from "@cdktf/provider-cloudflare/lib/provider"
+import { Record } from "@cdktf/provider-cloudflare/lib/record"
 
 class Stack extends TerraformStack {
 
@@ -34,6 +37,12 @@ class Stack extends TerraformStack {
       apiToken: config.env.CLOUDFLARE_API_TOKEN,
     })
 
+    this.awsProvider = new AwsProvider(this, Utils.id(name, "awsprovider"), {
+      region: config.env.AWS_REGION,
+      accessKey: config.env.AWS_ACCESS_KEY_ID,
+      secretKey: config.env.AWS_ACCESS_SECRET_KEY,
+    })
+
     // Create a custom domain entry at Auth0
     this.customDomain = new CustomDomain(this, Utils.id(name, "customDomain"), {
       provider: this.auth0Provider,
@@ -42,8 +51,7 @@ class Stack extends TerraformStack {
     })
 
     new TerraformOutput(this, "customDomain.originDomainName", {
-      value: this.customDomain.originDomainName,
-      sensitive: false
+      value: this.customDomain.originDomainName
     })
 
     this.cloudFlareTxtRecord = new Record(this, Utils.id(name, "cfTxtRecord"), {
@@ -59,16 +67,10 @@ class Stack extends TerraformStack {
 
     // Verify the domain
     this.customDomainVerification = new CustomDomainVerificationA(this, Utils.id(name, "customDomainVerification"), {
-      provider: this.auth0Provider,
       dependsOn: [this.cloudFlareTxtRecord],
+      provider: this.auth0Provider,
       customDomainId: this.customDomain.id,
       timeouts: { create: "15m" }
-    })
-
-    this.awsProvider = new AwsProvider(this, Utils.id(name, "awsprovider"), {
-      region: config.env.AWS_REGION,
-      accessKey: config.env.AWS_ACCESS_KEY_ID,
-      secretKey: config.env.AWS_ACCESS_SECRET_KEY,
     })
 
     this.cloudfrontDistribution = new CloudfrontDistribution(this, Utils.id(name, "awscfdist"), {
@@ -120,8 +122,8 @@ class Stack extends TerraformStack {
 
     // Create a DNS entry at CloudFlare
     this.cloudFlareCNameRecord = new Record(this, Utils.id(name, "cfCnameRecord"), {
-      provider: this.cloudFlareProvider,
       dependsOn: [this.cloudfrontDistribution],
+      provider: this.cloudFlareProvider,
       zoneId: config.env.CLOUDFLARE_ZONE_ID,
       name: config.env.CUSTOM_DOMAIN.replace(`${config.env.CUSTOM_DOMAIN_ETLD}`, ""),
       type: "CNAME",

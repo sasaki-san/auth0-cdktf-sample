@@ -1,8 +1,12 @@
 import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
-import { Auth0Provider, Client, Connection, ResourceServer, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
+import { Client } from "../../.gen/providers/auth0/client";
+import { Connection } from "../../.gen/providers/auth0/connection";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
+import { User } from "../../.gen/providers/auth0/user";
 
 class Stack extends TerraformStack {
 

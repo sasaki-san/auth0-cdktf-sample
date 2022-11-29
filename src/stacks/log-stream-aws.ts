@@ -5,9 +5,10 @@ import { CloudwatchEventBus } from "@cdktf/provider-aws/lib/cloudwatch-event-bus
 import { CloudwatchEventRule } from "@cdktf/provider-aws/lib/cloudwatch-event-rule"
 import { CloudwatchEventTarget } from "@cdktf/provider-aws/lib/cloudwatch-event-target"
 import { CloudwatchLogGroup } from "@cdktf/provider-aws/lib/cloudwatch-log-group"
-import { Auth0Provider, LogStream } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
+import { LogStream } from "../../.gen/providers/auth0/log-stream";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 
 class Stack extends TerraformStack {
 

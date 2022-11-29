@@ -1,6 +1,8 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Action, Auth0Provider, TriggerBinding } from "../../.gen/providers/auth0"
+import { Auth0Provider } from "../../.gen/providers/auth0/provider"
+import { Action } from "../../.gen/providers/auth0/action"
+import { TriggerBinding } from "../../.gen/providers/auth0/trigger-binding"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
 

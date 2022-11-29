@@ -1,5 +1,5 @@
 import { Fn } from "cdktf"
-import { ConnectionConfig } from "../../.gen/providers/auth0"
+import { ConnectionConfig } from "../../.gen/providers/auth0/connection"
 import { Types, Utils } from "../utils"
 
 const auth0: ConnectionConfig = {

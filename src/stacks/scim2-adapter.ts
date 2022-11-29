@@ -1,8 +1,14 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformOutput, TerraformStack } from "cdktf";
-import { Action, Auth0Provider, Client, ClientGrant, Connection, ResourceServer, TriggerBinding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
+import { Action } from "../../.gen/providers/auth0/action";
+import { Client } from "../../.gen/providers/auth0/client";
+import { ClientGrant } from "../../.gen/providers/auth0/client-grant";
+import { Connection } from "../../.gen/providers/auth0/connection";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
+import { TriggerBinding } from "../../.gen/providers/auth0/trigger-binding";
 
 class Stack extends TerraformStack {
 

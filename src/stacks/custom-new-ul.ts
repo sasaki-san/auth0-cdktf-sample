@@ -1,8 +1,9 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, Branding } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
+import { Branding } from "../../.gen/providers/auth0/branding";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 
 class Stack extends TerraformStack {
 

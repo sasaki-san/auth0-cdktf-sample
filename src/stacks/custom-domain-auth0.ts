@@ -1,9 +1,12 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, CustomDomain, CustomDomainVerificationA } from "../../.gen/providers/auth0"
-import { CloudflareProvider, Record } from "../../.gen/providers/cloudflare"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
+import { CustomDomain } from "../../.gen/providers/auth0/custom-domain";
+import { CustomDomainVerificationA } from "../../.gen/providers/auth0/custom-domain-verification";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { CloudflareProvider } from "@cdktf/provider-cloudflare/lib/provider"
+import { Record } from "@cdktf/provider-cloudflare/lib/record"
 
 class Stack extends TerraformStack {
 

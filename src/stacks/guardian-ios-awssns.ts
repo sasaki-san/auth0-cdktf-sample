@@ -1,12 +1,18 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformOutput, TerraformStack } from "cdktf";
-import { Auth0Provider, Client, ClientGrant, Connection, Guardian, ResourceServer, User } from "../../.gen/providers/auth0"
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { SnsPlatformApplication } from "@cdktf/provider-aws/lib/sns-platform-application"
 import { SnsTopic } from "@cdktf/provider-aws/lib/sns-topic"
 import { SnsTopicSubscription } from "@cdktf/provider-aws/lib/sns-topic-subscription"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
+import { Client } from "../../.gen/providers/auth0/client";
+import { ClientGrant } from "../../.gen/providers/auth0/client-grant";
+import { Connection } from "../../.gen/providers/auth0/connection";
+import { Guardian } from "../../.gen/providers/auth0/guardian";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
+import { User } from "../../.gen/providers/auth0/user";
 
 class Stack extends TerraformStack {
 

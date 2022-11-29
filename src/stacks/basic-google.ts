@@ -1,6 +1,9 @@
 import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
-import { Auth0Provider, Client, Connection, ResourceServer } from "../../.gen/providers/auth0"
+import { Auth0Provider } from "../../.gen/providers/auth0/provider"
+import { Client } from "../../.gen/providers/auth0/client"
+import { Connection } from "../../.gen/providers/auth0/connection"
+import { ResourceServer } from "../../.gen/providers/auth0/resource-server"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
 

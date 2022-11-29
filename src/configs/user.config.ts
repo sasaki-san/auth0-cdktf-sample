@@ -1,4 +1,4 @@
-import { UserConfig } from "../../.gen/providers/auth0";
+import { UserConfig } from "../../.gen/providers/auth0/user";
 import { Utils } from "../utils";
 
 const john: UserConfig = {

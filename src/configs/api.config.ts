@@ -1,4 +1,4 @@
-import { ResourceServerConfig } from "../../.gen/providers/auth0";
+import { ResourceServerConfig } from "../../.gen/providers/auth0/resource-server";
 import { Types } from "../utils";
 
 const _default: ResourceServerConfig = {

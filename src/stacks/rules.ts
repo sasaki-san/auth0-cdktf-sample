@@ -1,8 +1,10 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, Rule, RuleConfigA, RuleConfigAConfig } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { Rule } from "../../.gen/providers/auth0/rule";
+import { RuleConfigAConfig, RuleConfigA } from "../../.gen/providers/auth0/rule-config";
 
 class Stack extends TerraformStack {
 

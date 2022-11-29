@@ -1,8 +1,12 @@
 import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
-import { Auth0Provider, Client, Connection, GlobalClient, User } from "../../.gen/providers/auth0"
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
+import { Client } from "../../.gen/providers/auth0/client";
+import { Connection } from "../../.gen/providers/auth0/connection";
+import { GlobalClient } from "../../.gen/providers/auth0/global-client";
+import { Auth0Provider } from "../../.gen/providers/auth0/provider";
+import { User } from "../../.gen/providers/auth0/user";
 const shell = require('child_process').execSync
 
 class Stack extends TerraformStack {

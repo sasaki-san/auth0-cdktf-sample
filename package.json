@@ -20,8 +20,9 @@
     "node": ">=14.0"
   },
   "dependencies": {
-    "@cdktf/provider-aws": "^10.0.11",
-    "cdktf": "^0.13.0-pre.54",
+    "@cdktf/provider-aws": "^11.0.2",
+    "@cdktf/provider-cloudflare": "^4.0.0",
+    "cdktf": "^0.14.1",
     "constructs": "^10.1.111",
     "dotenv": "^16.0.2"
   },

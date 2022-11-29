@@ -1,4 +1,4 @@
-import { ClientConfig } from "../../.gen/providers/auth0"
+import { ClientConfig } from "../../.gen/providers/auth0/client"
 import { Types } from "../utils"
 import { envConfig } from "./env.config"
 
