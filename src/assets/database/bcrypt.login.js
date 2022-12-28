@@ -1,10 +1,17 @@
 function login(email, password, callback) {
   const request = require('request');
   const bcrypt = require('bcrypt');
+
+  const hashParams = {
+    plainPassword: password,
+  }
+  const echoParams = {
+    email,
+    id: `id-1234-${email}`
+  }
   const api = `https://auth0-dummy-users.yusasaki0.app/echo/bcrypt`;
-  const dummyApiParams = `plainPassword=${password}`;
-  const echoParams = `email=${email}&id=id-1234`;
-  const url = `${api}?${dummyApiParams}&${echoParams}`;
+  const joinParams = (params) => Object.keys(params).map(k => `${k}=${encodeURIComponent(params[k])}`).join("&")
+  const url = `${api}?${joinParams(hashParams)}&${joinParams(echoParams)}`;
 
   request.get({ url }, function (err, response, body) {
     if (err) return callback(err)

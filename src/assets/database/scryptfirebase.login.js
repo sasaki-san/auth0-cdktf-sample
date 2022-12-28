@@ -2,8 +2,6 @@ async function login(email, password, callback) {
   const request = require('request');
   const firebase = require("firebase-scrypt")
 
-  const joinParams = (params) => Object.keys(params).map(k => `${k}=${encodeURIComponent(params[k])}`).join("&")
-
   const hashParams = {
     plainPassword: password,
     salt: "Ctkzla5ZrMWjMA==",
@@ -18,22 +16,21 @@ async function login(email, password, callback) {
     id: `id-1234-${email}`
   }
   const api = `https://auth0-dummy-users.yusasaki0.app/echo/scryptFirebase`;
+  const joinParams = (params) => Object.keys(params).map(k => `${k}=${encodeURIComponent(params[k])}`).join("&")
   const url = `${api}?${joinParams(hashParams)}&${joinParams(echoParams)}`;
-
-  const scrypt = new firebase.FirebaseScrypt({
-    memCost: hashParams.memCost,
-    rounds: hashParams.saltRounds,
-    saltSeparator: hashParams.saltSeparator,
-    signerKey: hashParams.signerKey
-  })
 
   request.get({ url }, async function (err, response, body) {
     if (err) return callback(err)
     if (response.statusCode === 401) return callback();
     const user = JSON.parse(body);
 
+    const scrypt = new firebase.FirebaseScrypt({
+      memCost: hashParams.memCost,
+      rounds: hashParams.saltRounds,
+      saltSeparator: hashParams.saltSeparator,
+      signerKey: hashParams.signerKey
+    })
     const isValid = await scrypt.verify(password, hashParams.salt, user.password);
-    console.log(isValid)
     if (!isValid) {
       return callback(new WrongUsernameOrPasswordError(email));
     }
