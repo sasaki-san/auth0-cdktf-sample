@@ -50,4 +50,5 @@ class Stack extends TerraformStack {
 export default (app: App) => {
   new Stack(app, "customdb-import-bcrypt", "bcrypt");
   new Stack(app, "customdb-import-pbkdf2", "pbkdf2");
+  new Stack(app, "customdb-import-scryptfirebase", "scryptfirebase");
 }
