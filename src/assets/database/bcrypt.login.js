@@ -1,15 +1,17 @@
 function login(email, password, callback) {
   const request = require('request');
   const bcrypt = require('bcrypt');
-  const url = `https://dummy-json.vercel.app/users-by-email/${email}?select=id,email,password_bcrypt_utf8`;
+  const api = `https://auth0-dummy-users.yusasaki0.app/echo/bcrypt`;
+  const dummyApiParams = `plainPassword=${password}`;
+  const echoParams = `email=${email}&id=id-1234`;
+  const url = `${api}?${dummyApiParams}&${echoParams}`;
 
   request.get({ url }, function (err, response, body) {
-    if (err) return callback(err);
+    if (err) return callback(err)
     if (response.statusCode === 401) return callback();
     const user = JSON.parse(body);
 
-    const encryptedPassword = user.password_bcrypt_utf8;
-    if (!bcrypt.compareSync(password, encryptedPassword)) {
+    if (!bcrypt.compareSync(password, user.password)) {
       return callback(new WrongUsernameOrPasswordError(email));
     }
 

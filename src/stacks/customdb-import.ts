@@ -3,7 +3,6 @@ import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider"
 import { Client } from "../../.gen/providers/auth0/client"
 import { Connection } from "../../.gen/providers/auth0/connection"
-import { ResourceServer } from "../../.gen/providers/auth0/resource-server"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
 
@@ -11,10 +10,9 @@ class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
-  readonly resourceServer: ResourceServer
   readonly connection: Connection
 
-  constructor(scope: Construct, name: string) {
+  constructor(scope: Construct, name: string, alg: string) {
     super(scope, name)
 
     Validators.validateEnvValues(["DOMAIN", "CLIENT_ID", "CLIENT_SECRET"])
@@ -31,13 +29,6 @@ class Stack extends TerraformStack {
       name: Utils.id(name, "client")
     })
 
-    // Create an Auth0 API 
-    this.resourceServer = new ResourceServer(this, Utils.id(name, "api"), {
-      ...config.base.api.default,
-      name: Utils.id(name, "api"),
-      identifier: `https://${name}`,
-    })
-
     // Create an Auth0 Connection 
     this.connection = new Connection(this, Utils.id(name, "connection"), {
       ...config.base.connection.auth0,
@@ -47,8 +38,8 @@ class Stack extends TerraformStack {
         importMode: true,
         enabledDatabaseCustomization: true,
         customScripts: {
-          login: Fn.file(Utils.assetPath("database", "auto-import-bcrypt.login.js")),
-          get_user: Fn.file(Utils.assetPath("database", "auto-import-bcrypt.getUser.js"))
+          login: Fn.file(Utils.assetPath("database", `${alg}.login.js`)),
+          get_user: Fn.file(Utils.assetPath("database", "getUser.js"))
         }
       }
     })
@@ -57,5 +48,6 @@ class Stack extends TerraformStack {
 }
 
 export default (app: App) => {
-  new Stack(app, "auto-import-bcrypt-pw");
+  new Stack(app, "customdb-import-bcrypt", "bcrypt");
+  new Stack(app, "customdb-import-pbkdf2", "pbkdf2");
 }
