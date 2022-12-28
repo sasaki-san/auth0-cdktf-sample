@@ -36,6 +36,9 @@ export interface IEnvConfig {
   AZUREAD_TENANT_ID: string
   AZUREAD_CLIENT_ID: string
   AZUREAD_CLIENT_SECRET: string
+  OKTA_BASE_URL: string
+  OKTA_ORG: string
+  OKTA_API_TOKEN: string
   AMAZON_CIENT_ID: string
   AMAZON_CLIENT_SECRET: string
   GOOGLE_CIENT_ID: string
@@ -79,6 +82,9 @@ export const envConfig: IEnvConfig = {
   AZUREAD_TENANT_ID: process.env.AZUREAD_TENANT_ID!,
   AZUREAD_CLIENT_ID: process.env.AZUREAD_CLIENT_ID!,
   AZUREAD_CLIENT_SECRET: process.env.AZUREAD_CLIENT_SECRET!,
+  OKTA_BASE_URL: process.env.OKTA_BASE_URL!,
+  OKTA_ORG: process.env.OKTA_ORG!,
+  OKTA_API_TOKEN: process.env.OKTA_API_TOKEN!,
   AMAZON_CIENT_ID: process.env.AMAZON_CIENT_ID!,
   AMAZON_CLIENT_SECRET: process.env.AMAZON_CLIENT_SECRET!,
   GOOGLE_CIENT_ID: process.env.GOOGLE_CIENT_ID!,

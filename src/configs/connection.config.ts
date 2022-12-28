@@ -116,6 +116,20 @@ const azuread: ConnectionConfig = {
   }
 }
 
+const okta: ConnectionConfig = {
+  name: "TBD",
+  strategy: Types.Strategies.okta,
+  showAsButton: true,
+  displayName: "Okta Workforce Identity",
+  options: {
+    clientId: "TBD",
+    clientSecret: "TBD",
+    domain: "TBD",
+    domainAliases: ["TBD"],
+  }
+}
+
+
 
 export interface IConnectionConfig {
   auth0: ConnectionConfig
@@ -125,6 +139,7 @@ export interface IConnectionConfig {
   google: ConnectionConfig
   amazon: ConnectionConfig
   azuread: ConnectionConfig
+  okta: ConnectionConfig
 }
 
 export const connectionConfig: IConnectionConfig = {
@@ -134,5 +149,6 @@ export const connectionConfig: IConnectionConfig = {
   saml,
   google,
   amazon,
-  azuread
+  azuread,
+  okta
 }

@@ -16,7 +16,7 @@ const common: ClientConfig = {
   },
   customLoginPageOn: true,
   isTokenEndpointIpHeaderTrusted: false,
-  callbacks: [envConfig.PROTOCOL_DEBUGGER_CALLBACK]
+  callbacks: [envConfig.PROTOCOL_DEBUGGER_CALLBACK],
 }
 
 const native: ClientConfig = {
@@ -70,6 +70,7 @@ const rwa: ClientConfig = {
   },
   tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.client_secret_post,
   appType: Types.AppTypes.regular_web,
+  callbacks: [...common.callbacks || [], "http://localhost:3000/callback"],
   grantTypes: [
     Types.GrantTypes.authorization_code,
     Types.GrantTypes.implicit,
@@ -91,6 +92,9 @@ const spa: ClientConfig = {
   },
   tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.none,
   appType: Types.AppTypes.spa,
+  allowedLogoutUrls: [...common.allowedLogoutUrls || [], "http://localhost:3000"],
+  callbacks: [...common.callbacks || [], "http://localhost:3000"],
+  webOrigins: [...common.webOrigins || [], "http://localhost:3000"],
   grantTypes: [
     Types.GrantTypes.authorization_code,
     Types.GrantTypes.implicit,
