@@ -4,11 +4,11 @@ import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
 import { Client } from "../../.gen/providers/auth0/client";
 import { ClientGrant } from "../../.gen/providers/auth0/client-grant";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { GlobalClient } from "../../.gen/providers/auth0/global-client";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
 import { User } from "../../.gen/providers/auth0/user";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
@@ -16,7 +16,7 @@ class Stack extends TerraformStack {
   readonly client: Client
   readonly resourceServer: ResourceServer
   readonly clientGrants: ClientGrant
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
   readonly user: User
   readonly globalClient: GlobalClient
 
@@ -57,19 +57,23 @@ class Stack extends TerraformStack {
     })
 
     // Create a Passwordless - SMS Connection
-    this.connection = new Connection(this, Utils.id(name, "connection-sms"), {
-      ...config.base.connection.sms,
-      options: {
-        ...config.base.connection.sms.options,
-        from: config.env.PASSWORDLESS_SMS_SEND_FROM_NUMBER,
-        twilioSid: config.env.TWILIO_SID,
-        twilioToken: config.env.TWILIO_TOKEN
-      },
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "sms",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
+      overrides: {
+        connection: {
+          options: {
+            from: config.env.PASSWORDLESS_SMS_SEND_FROM_NUMBER,
+            twilioSid: config.env.TWILIO_SID,
+            twilioToken: config.env.TWILIO_TOKEN
+          },
+        }
+      }
     })
 
     // Create a User in the connection
     this.user = new User(this, Utils.id(name, "user"), {
+      dependsOn: this.connection.dependables,
       ...config.base.user.passwordless.bo,
       connectionName: this.connection.name,
       phoneNumber: config.env.PASSWORDLESS_SMS_USER_PHONE_NUMBER

@@ -3,16 +3,16 @@ import { App, TerraformStack } from "cdktf";
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
 import { Client } from "../../.gen/providers/auth0/client";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { Tenant } from "../../.gen/providers/auth0/tenant";
 import { User } from "../../.gen/providers/auth0/user";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
   readonly user: User
   readonly tenant: Tenant;
 
@@ -35,10 +35,9 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "auth0",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     // Update both password-reset and multifactor templates
@@ -51,6 +50,7 @@ class Stack extends TerraformStack {
 
     // Create a User in the created connection
     this.user = new User(this, Utils.id(name, "user"), {
+      dependsOn: this.connection.dependables,
       ...config.base.user.john,
       connectionName: this.connection.name,
     })

@@ -4,21 +4,21 @@ import { config } from "../configs"
 import { Utils, Validators } from "../utils";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { Client } from "../../.gen/providers/auth0/client";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { Rule } from "../../.gen/providers/auth0/rule";
 import { User } from "../../.gen/providers/auth0/user";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
   readonly idpAuth0Provider: Auth0Provider
   readonly idpClient: Client
-  readonly idpConnection: Connection
+  readonly idpConnection: ConnectionDeployment
   readonly idpUser: User
   readonly idpRule: Rule
 
   readonly spAuth0Provider: Auth0Provider
   readonly spClient: Client
-  readonly spConnection: Connection
+  readonly spConnection: ConnectionDeployment
   readonly spRule: Rule
 
   constructor(scope: Construct, name: string) {
@@ -44,11 +44,14 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.idpConnection = new Connection(this, Utils.id(name, "idp-connection"), {
-      provider: this.idpAuth0Provider,
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "idp-connection"),
-      enabledClients: [this.idpClient.clientId, config.env.CLIENT_ID],
+    this.idpConnection = new ConnectionDeployment(this, "idp-connection", {
+      strategy: "auth0",
+      enabledClientIds: [this.idpClient.clientId, config.env.CLIENT_ID],
+      overrides: {
+        connection: {
+          provider: this.idpAuth0Provider,
+        }
+      }
     })
 
     // Create a User in the created connection
@@ -91,20 +94,22 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.spConnection = new Connection(this, Utils.id(name, "sp-connection"), {
-      provider: this.spAuth0Provider,
-      ...config.base.connection.saml,
-      name: Utils.id(name, "sp-connection"),
-      enabledClients: [this.spClient.clientId, config.env.SAML_SP_CLIENT_ID],
-      options: {
-        ...config.base.connection.saml.options,
-        signInEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}`,
-        signOutEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}/logout`,
-        signingCert: Fn.base64encode(Fn.lookup(Fn.element(this.idpClient.signingKeys, 0), "cert", "")),
-        debug: true,
-        fieldsMap: JSON.stringify({
-          saml_profile_data_color: "http://schemas.my-cdktf-stack.me/claims/color"
-        })
+    this.spConnection = new ConnectionDeployment(this, "sp-connection", {
+      strategy: "saml",
+      enabledClientIds: [this.spClient.clientId, config.env.SAML_SP_CLIENT_ID],
+      overrides: {
+        connection: {
+          provider: this.spAuth0Provider,
+          options: {
+            signInEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}`,
+            signOutEndpoint: `https://${config.env.DOMAIN}/samlp/${this.idpClient.clientId}/logout`,
+            signingCert: Fn.base64encode(Fn.lookup(Fn.element(this.idpClient.signingKeys, 0), "cert", "")),
+            debug: true,
+            fieldsMap: JSON.stringify({
+              saml_profile_data_color: "http://schemas.my-cdktf-stack.me/claims/color"
+            })
+          }
+        }
       }
     })
 

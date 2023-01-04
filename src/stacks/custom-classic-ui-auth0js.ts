@@ -3,10 +3,10 @@ import { App, Fn, TerraformStack } from "cdktf";
 import { config } from "../configs"
 import { Types, Utils, Validators } from "../utils";
 import { Client } from "../../.gen/providers/auth0/client";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { GlobalClient } from "../../.gen/providers/auth0/global-client";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { User } from "../../.gen/providers/auth0/user";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 const shell = require('child_process').execSync
 
 class Stack extends TerraformStack {
@@ -14,8 +14,8 @@ class Stack extends TerraformStack {
   readonly auth0Provider: Auth0Provider
   readonly client: Client
   readonly globalClient: GlobalClient
-  readonly connection: Connection
-  readonly connection2: Connection
+  readonly connection: ConnectionDeployment
+  readonly connectionEmail: ConnectionDeployment
   readonly user: User
   readonly user2: User
 
@@ -51,20 +51,20 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, "conn-auth0", {
+      strategy: "auth0",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     // Create a Passwordless - Email Connection
-    this.connection2 = new Connection(this, Utils.id(name, "connection2"), {
-      ...config.base.connection.email,
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connectionEmail = new ConnectionDeployment(this, "conn-email", {
+      strategy: "email",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     // Create a User in the created connection
     this.user = new User(this, Utils.id(name, "user-john"), {
+      dependsOn: this.connection.dependables,
       email: "john@gmail.com",
       password: "Password!",
       connectionName: this.connection.name,
@@ -72,8 +72,9 @@ class Stack extends TerraformStack {
 
     // Create a User in the created connection
     this.user2 = new User(this, Utils.id(name, "user-john2"), {
+      dependsOn: this.connectionEmail.dependables,
       email: "john@gmail.com",
-      connectionName: this.connection2.name,
+      connectionName: this.connectionEmail.connection.name,
     })
 
     const originalAssetPath = Utils.assetPath("classic-ul", "login.auth0js.html")

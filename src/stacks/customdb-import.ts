@@ -2,15 +2,15 @@ import { Construct } from "constructs";
 import { App, Fn, TerraformStack } from "cdktf";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider"
 import { Client } from "../../.gen/providers/auth0/client"
-import { Connection } from "../../.gen/providers/auth0/connection"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
   readonly auth0Provider: Auth0Provider
   readonly client: Client
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
 
   constructor(scope: Construct, name: string, alg: string) {
     super(scope, name)
@@ -30,25 +30,47 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection 
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID],
-      options: {
-        importMode: true,
-        enabledDatabaseCustomization: true,
-        customScripts: {
-          login: Fn.file(Utils.assetPath("database", `${alg}.login.js`)),
-          get_user: Fn.file(Utils.assetPath("database", "getUser.js"))
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "auth0",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
+      overrides: {
+        connection: {
+          options: {
+            importMode: true,
+            enabledDatabaseCustomization: true,
+            customScripts: {
+              login: Fn.file(Utils.assetPath("database", `${alg}.login.js`)),
+              get_user: Fn.file(Utils.assetPath("database", "getUser.js"))
+            },
+            ...this.getConfiguration(alg)
+          }
         }
       }
     })
 
+  }
+
+  getConfiguration(alg: string) {
+
+    if (alg === "mscrypt2") {
+      return {
+        configuration: {
+          FIREBASE_APIKEY: config.env.FIREBASE_APIKEY,
+          FIREBASE_AUTHDOMAIN: config.env.FIREBASE_AUTHDOMAIN,
+          FIREBASE_PROJECTID: config.env.FIREBASE_PROJECTID,
+        }
+      }
+    }
+
+    return {}
   }
 }
 
 export default (app: App) => {
   new Stack(app, "customdb-import-bcrypt", "bcrypt");
   new Stack(app, "customdb-import-pbkdf2", "pbkdf2");
-  new Stack(app, "customdb-import-scryptfirebase", "scryptfirebase");
+
+  // modified scrypt (firebase)
+  new Stack(app, "customdb-import-mscrypt1", "mscrypt1");
+  new Stack(app, "customdb-import-mscrypt2", "mscrypt2");
 }

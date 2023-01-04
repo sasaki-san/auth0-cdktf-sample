@@ -4,12 +4,12 @@ import { config } from "../configs"
 import { Utils, Validators } from "../utils";
 import { Client } from "../../.gen/providers/auth0/client";
 import { ClientGrant } from "../../.gen/providers/auth0/client-grant";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
 import { User } from "../../.gen/providers/auth0/user";
 import { Organization } from "../../.gen/providers/auth0/organization";
 import { OrganizationConnection } from "../../.gen/providers/auth0/organization-connection";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
@@ -17,7 +17,7 @@ class Stack extends TerraformStack {
   readonly client: Client
   readonly resourceServer: ResourceServer
   readonly clientGrants: ClientGrant
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
   readonly user: User
   readonly organization: Organization
   readonly organizationConnection: OrganizationConnection
@@ -59,10 +59,9 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "auth0",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     this.organization = new Organization(this, Utils.id(name, "org"), {
@@ -81,6 +80,7 @@ class Stack extends TerraformStack {
 
     // Create a User in the created connection
     this.user = new User(this, Utils.id(name, "user"), {
+      dependsOn: this.connection.dependables,
       ...config.base.user.john,
       connectionName: this.connection.name,
     })

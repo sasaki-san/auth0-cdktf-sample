@@ -5,10 +5,10 @@ import { Types, Utils, Validators } from "../utils";
 import { Action } from "../../.gen/providers/auth0/action";
 import { Client } from "../../.gen/providers/auth0/client";
 import { ClientGrant } from "../../.gen/providers/auth0/client-grant";
-import { Connection } from "../../.gen/providers/auth0/connection";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider";
 import { ResourceServer } from "../../.gen/providers/auth0/resource-server";
 import { TriggerBinding } from "../../.gen/providers/auth0/trigger-binding";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
@@ -16,7 +16,7 @@ class Stack extends TerraformStack {
   readonly scimAdapter: ResourceServer
   readonly auth0MgmtClient: Client
   readonly scimAdapterClient: Client
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
   readonly clientCredentialAction: Action
 
   constructor(scope: Construct, name: string) {
@@ -73,13 +73,17 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: connectionName,
-      options: {
-        requiresUsername: true
-      },
-      enabledClients: [this.scimAdapterClient.clientId, this.auth0MgmtClient.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "auth0",
+      enabledClientIds: [this.scimAdapterClient.clientId, this.auth0MgmtClient.clientId, config.env.CLIENT_ID],
+      overrides: {
+        connection: {
+          name: connectionName,
+          options: {
+            requiresUsername: true
+          },
+        }
+      }
     })
 
     this.clientCredentialAction = new Action(this, Utils.id(name, `action`), {

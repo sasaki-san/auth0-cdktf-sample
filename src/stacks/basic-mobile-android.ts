@@ -3,11 +3,11 @@ import { App, TerraformStack } from "cdktf";
 import { Auth0Provider } from "../../.gen/providers/auth0/provider"
 import { Client } from "../../.gen/providers/auth0/client"
 import { ClientGrant } from "../../.gen/providers/auth0/client-grant"
-import { Connection } from "../../.gen/providers/auth0/connection"
 import { ResourceServer } from "../../.gen/providers/auth0/resource-server"
 import { User } from "../../.gen/providers/auth0/user"
 import { config } from "../configs"
 import { Utils, Validators } from "../utils";
+import ConnectionDeployment from "../constructs/connection/connection-deployment";
 
 class Stack extends TerraformStack {
 
@@ -15,7 +15,7 @@ class Stack extends TerraformStack {
   readonly client: Client
   readonly resourceServer: ResourceServer
   readonly clientGrants: ClientGrant
-  readonly connection: Connection
+  readonly connection: ConnectionDeployment
   readonly user: User
 
   constructor(scope: Construct, name: string) {
@@ -53,14 +53,14 @@ class Stack extends TerraformStack {
     })
 
     // Create an Auth0 Connection (Username and Password)
-    this.connection = new Connection(this, Utils.id(name, "connection"), {
-      ...config.base.connection.auth0,
-      name: Utils.id(name, "connection"),
-      enabledClients: [this.client.clientId, config.env.CLIENT_ID]
+    this.connection = new ConnectionDeployment(this, Utils.id(name, "connection"), {
+      strategy: "auth0",
+      enabledClientIds: [this.client.clientId, config.env.CLIENT_ID],
     })
 
     // Create a User in the created connection
     this.user = new User(this, Utils.id(name, "user"), {
+      dependsOn: this.connection.dependables,
       ...config.base.user.john,
       connectionName: this.connection.name,
       picture: Utils.roboHash(name)
