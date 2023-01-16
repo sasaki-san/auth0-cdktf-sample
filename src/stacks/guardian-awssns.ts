@@ -39,7 +39,7 @@ class Stack extends TerraformStack {
     this.client = new Client(this, Utils.id(name, "client"), {
       ...config.base.client.native,
       name: Utils.id(name, "client"),
-      logoUri: Utils.logUris.android,
+      logoUri: Utils.logUris.guardian,
       callbacks: [
         ...(config.base.client.native.callbacks || []),
         ...config.env.MOBILE_ANDROID_CALLBACK,
@@ -94,6 +94,7 @@ class Stack extends TerraformStack {
         platform: "GCM",
         overrides: {
           snsTopicSubscription: {
+            protocol: "email",
             endpoint: config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL
           },
           snsPlatformApp: {
@@ -109,6 +110,7 @@ class Stack extends TerraformStack {
         platform: "APNS_SANDBOX",
         overrides: {
           snsTopicSubscription: {
+            protocol: "email",
             endpoint: config.env.GUARDIAN_SNS_EVENT_DELIVERY_EMAIL
           },
           snsPlatformApp: {
@@ -131,6 +133,7 @@ class Stack extends TerraformStack {
       policy: Types.Policies.Always,
       push: {
         provider: "sns",
+        enabled: true,
         amazonSns: {
           awsAccessKeyId: config.env.AWS_ACCESS_KEY_ID,
           awsSecretAccessKey: config.env.AWS_ACCESS_SECRET_KEY,

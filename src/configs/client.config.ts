@@ -71,6 +71,7 @@ const rwa: ClientConfig = {
   tokenEndpointAuthMethod: Types.TokenEndpointAuthMethod.client_secret_post,
   appType: Types.AppTypes.regular_web,
   callbacks: [...common.callbacks || [], "http://localhost:3000/callback"],
+  allowedLogoutUrls: [...common.allowedLogoutUrls || [], "http://localhost:3000"],
   grantTypes: [
     Types.GrantTypes.authorization_code,
     Types.GrantTypes.implicit,

@@ -26,6 +26,8 @@ const appleLogoUri = `https://openmoji.org/data/color/svg/F8FF.svg`
 
 const androidLogoUri = `https://openmoji.org/data/color/svg/E047.svg`
 
+const guardianLogoUri = `https://openmoji.org/data/color/svg/1F916.svg`
+
 const Utils = {
   id,
   assetPath,
@@ -33,7 +35,8 @@ const Utils = {
   auth0AuthApiDebuggerUrl,
   logUris: {
     apple: appleLogoUri,
-    android: androidLogoUri
+    android: androidLogoUri,
+    guardian: guardianLogoUri
   }
 }
 
